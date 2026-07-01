@@ -15,4 +15,10 @@ jobs:
         run: docker compose -f docker-compose.prod.yml build
 
       - name: Deploy to Swarm
-        run: docker stack deploy -c docker-compose.prod.yml taxidriverlab
+        run: |
+          docker stack deploy -c docker-compose.prod.yml taxidriverlab
+          # Images are built locally (no registry), so the tag never changes and
+          # Swarm won't otherwise notice the content changed. Force a rolling
+          # restart so the freshly built image actually gets picked up.
+          docker service update --force taxidriverlab_backend
+          docker service update --force taxidriverlab_frontend
