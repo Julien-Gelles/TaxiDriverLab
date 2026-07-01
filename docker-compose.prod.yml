@@ -1,0 +1,44 @@
+# Production stack — deployed to Docker Swarm, routed through the shared
+# Traefik instance. For local dev use docker-compose.yml instead.
+#
+#     docker compose -f docker-compose.prod.yml build
+#     docker compose -f docker-compose.prod.yml config | docker stack deploy -c - taxidriverlab
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    image: taxidriverlab-backend:latest
+    networks:
+      - web
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.services.taxidriverlab-api.loadbalancer.server.port=8000"
+        - "traefik.http.routers.taxidriverlab-api.rule=Host(`taxidriverlab-api.nowapi.fr`)"
+        - "traefik.http.routers.taxidriverlab-api.entrypoints=websecure"
+        - "traefik.http.routers.taxidriverlab-api.tls.certresolver=ovh"
+
+  frontend:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+      args:
+        VITE_SIM_WS_URL: wss://taxidriverlab-api.nowapi.fr/ws
+    image: taxidriverlab-frontend:latest
+    networks:
+      - web
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.services.taxidriverlab.loadbalancer.server.port=80"
+        - "traefik.http.routers.taxidriverlab.rule=Host(`taxidriverlab.nowapi.fr`)"
+        - "traefik.http.routers.taxidriverlab.entrypoints=websecure"
+        - "traefik.http.routers.taxidriverlab.tls.certresolver=ovh"
+
+networks:
+  web:
+    external: true
