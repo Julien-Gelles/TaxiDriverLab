@@ -69,6 +69,7 @@ class DQNAgent:
         batch_size: int = 64,
         memory_size: int = 10000,
         target_update: int = 10,
+        train_every: int = 4,
     ) -> None:
         """
         Initialize the DQN agent (networks, optimizer, replay buffer).
@@ -83,6 +84,12 @@ class DQNAgent:
             batch_size: Mini-batch size sampled from the replay buffer.
             memory_size: Maximum number of transitions kept in the buffer.
             target_update: Refresh the target network every N episodes.
+            train_every: Run a gradient step every N environment steps
+                (every transition is still stored). Matches the original
+                DQN paper's practice of training every 4 steps rather than
+                every single one — cuts training compute ~4x with no
+                meaningful effect on learning, since it only thins out how
+                often the *same* replay buffer gets sampled.
         """
         self.state_size = state_size
         self.action_size = action_size
@@ -90,6 +97,8 @@ class DQNAgent:
         self.epsilon = epsilon
         self.batch_size = batch_size
         self.target_update = target_update
+        self.train_every = max(1, train_every)
+        self._step_count = 0
 
         if seed is not None:
             random.seed(seed)
@@ -158,7 +167,9 @@ class DQNAgent:
             done: True if the episode ended (terminated OR truncated).
         """
         self.memory.append((state, action, reward, next_state, done))
-        self._learn()
+        self._step_count += 1
+        if self._step_count % self.train_every == 0:
+            self._learn()
 
     def _learn(self) -> None:
         """Sample a random mini-batch and take one gradient step (Double DQN)."""

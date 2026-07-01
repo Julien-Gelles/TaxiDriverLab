@@ -49,6 +49,7 @@ class DQNAgent:
         batch_size: int = 128,
         memory_size: int = 50_000,
         target_update: int = 10,
+        train_every: int = 4,
         **kwargs,
     ):
         self.action_space_size = action_space_size
@@ -58,6 +59,11 @@ class DQNAgent:
         self.epsilon_min = epsilon_min
         self.batch_size = batch_size
         self.target_update = target_update
+        # Train every N steps rather than every single one (every transition
+        # is still stored) — matches the original DQN paper's practice, cuts
+        # training compute ~4x with no meaningful effect on learning.
+        self.train_every = max(1, train_every)
+        self._step_count = 0
         self._last_was_exploration = False
 
         self.memory: deque = deque(maxlen=memory_size)
@@ -97,8 +103,9 @@ class DQNAgent:
         if next_valid_mask is None:
             next_valid_mask = np.ones(self.action_space_size, dtype=bool)
         self.memory.append((state, action, reward, next_state, done, next_valid_mask))
+        self._step_count += 1
 
-        if len(self.memory) < self.batch_size:
+        if len(self.memory) < self.batch_size or self._step_count % self.train_every != 0:
             return None
 
         batch = random.sample(self.memory, self.batch_size)
