@@ -8,8 +8,8 @@ import {
   AboutText,
   AboutTitle,
 } from "../styles";
-import taxiImg from "../assets/taxi.png";
-import taxiDemoImg from "../assets/taxi-demo.png";
+import taxiImg from "../assets/taxi.webp";
+import taxiDemoImg from "../assets/taxi-demo.webp";
 
 export const AboutPanel = () => {
   const { t } = useTranslation();

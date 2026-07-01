@@ -45,8 +45,8 @@ import {
   Thumb,
   ThumbOverlay,
 } from "../styles";
-import taxiImg from "../assets/taxi.png";
-import taxiDemoImg from "../assets/taxi-demo.png";
+import taxiImg from "../assets/taxi.webp";
+import taxiDemoImg from "../assets/taxi-demo.webp";
 import { widgetDrag, widgetLimit } from "./widgetDrag";
 
 const buildDragGhost = (type: string): HTMLElement | null => {
@@ -153,19 +153,19 @@ export const SidebarHeaderContent = ({ rowHeight }: { rowHeight: number }) => {
 
 // ── Body ──────────────────────────────────────────────────────────────────────
 
-const THUMBS = import.meta.glob("../assets/components/*.png", {
+const THUMBS = import.meta.glob("../assets/components/*.webp", {
   eager: true,
   import: "default",
 }) as Record<string, string>;
 
-// In demo mode, prefer the green "<id>-demo.png" variant when it exists; fall
+// In demo mode, prefer the green "<id>-demo.webp" variant when it exists; fall
 // back to the regular thumbnail otherwise.
 const thumb = (id: string, demo: boolean): string | undefined => {
   if (demo) {
-    const demoSrc = THUMBS[`../assets/components/${id}-demo.png`];
+    const demoSrc = THUMBS[`../assets/components/${id}-demo.webp`];
     if (demoSrc) return demoSrc;
   }
-  return THUMBS[`../assets/components/${id}.png`];
+  return THUMBS[`../assets/components/${id}.webp`];
 };
 
 // tKey maps to sidebar.menus.* (for groups) or sidebar.items.* (for items).
