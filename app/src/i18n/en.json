@@ -1,0 +1,292 @@
+{
+  "status": {
+    "running": "Running",
+    "stopped": "Stopped",
+    "ready": "Ready",
+    "connecting": "Connecting…",
+    "waiting": "Waiting for simulation…"
+  },
+  "mode": {
+    "train": "Training",
+    "demo": "Demo",
+    "trainTitle": "Training mode",
+    "demoTitle": "Demo mode (pre-trained agents)"
+  },
+  "topbar": {
+    "passengers1": "1 passenger",
+    "passengers2": "2 passengers",
+    "simulations": "{{count}} simulations",
+    "theme": "Theme",
+    "reload": "Reload",
+    "lang": "Language"
+  },
+  "sidebar": {
+    "brand": "Taxi-Driver Lab",
+    "brandDesc": "Reinforcement Learning",
+    "search": "Search…",
+    "clear": "Clear",
+    "components": "Components",
+    "collapseAll": "Collapse all",
+    "expandAll": "Expand all",
+    "settings": "Settings",
+    "limitReached": "{{label}} — limit reached ({{used}}/{{max}})",
+    "limitCount": "{{label}} ({{used}}/{{max}})",
+    "menus": {
+      "map": "Map",
+      "controls": "Controls",
+      "agent": "Agent",
+      "model": "Model",
+      "graphs": "Graphs",
+      "indicators": "Indicators",
+      "performance": "Performance",
+      "save": "Saves",
+      "about": "About",
+      "params": "Settings",
+      "help": "Help"
+    },
+    "items": {
+      "terrain": "Terrain",
+      "play": "Playback",
+      "speed": "Speed",
+      "agentChoice": "Agent choice",
+      "hyper": "Hyperparameters",
+      "stats": "Statistics",
+      "qtable": "Q-table",
+      "network": "Neural network",
+      "reward": "Reward / episode",
+      "steps": "Steps / episode",
+      "epsilon": "Epsilon / episode",
+      "totalSteps": "Total steps",
+      "avgReward": "Avg reward",
+      "epsilonMetric": "Epsilon (ε)",
+      "avgSteps": "Avg steps",
+      "maxReward": "Max reward",
+      "minSteps": "Min steps",
+      "performance": "Performance",
+      "chrono": "Chrono",
+      "savedAgents": "My agents",
+      "savedLayouts": "My layouts",
+      "about": "Overview",
+      "theme": "Theme",
+      "language": "Language",
+      "docs": "Documentation",
+      "aboutSettings": "About",
+      "soon": "Nothing here yet — content coming later."
+    }
+  },
+  "terrain": {
+    "title": "Terrain — Taxi-v4",
+    "double": " · 2 passengers",
+    "apiConnecting": "Connecting to API…",
+    "help": "Live Taxi-v4 map: taxi position, passenger(s) and destination."
+  },
+  "play": {
+    "chip_demo": "Demo",
+    "chip_train": "Controls",
+    "help_demo": "Runs the demo with the selected pre-trained agent (frozen model, pure exploitation, no learning).",
+    "help_train": "Start, pause or stop the simulation with the selected agent and parameters.",
+    "subtitle_demo": "Demo",
+    "subtitle_train": "Training",
+    "episodes": "/ {{total}} episodes",
+    "pause": "Pause",
+    "resume": "Resume",
+    "launch_demo": "Start demo",
+    "launch": "Start",
+    "stop": "Stop",
+    "speed": "Speed {{label}}",
+    "versions": "· {{count}} versions"
+  },
+  "speed": {
+    "title": "SPEED",
+    "help": "Adjusts simulation speed from Slow (0.4s/step) to Max (no delay, 1 frame/25)."
+  },
+  "agent": {
+    "passengers1": "1 passenger",
+    "passengers2": "2 passengers",
+    "help": "Select the algorithm (Q-Learning, SARSA, Monte Carlo, DQN, random or heuristic) and the 1 or 2 passenger mode.",
+    "pretrained": "Pre-trained model available"
+  },
+  "saved": {
+    "title": "My agents",
+    "help": "Save a trained tabular agent (Q-table) to localStorage or a file (max 4 slots), then select it in demo mode to replay it.",
+    "slots": "{{used}}/{{max}} slots",
+    "local": "local",
+    "file": "file",
+    "import": "import",
+    "saveLocal": "Save to localStorage",
+    "saveFile": "Export to file",
+    "export": "Export to file",
+    "delete": "Delete",
+    "double": "2 passengers",
+    "noModel": "Train a tabular agent (Q-Learning, SARSA, Monte Carlo) to be able to save it.",
+    "tabularOnly": "Tabular agent only",
+    "empty": "No saved agents",
+    "demoOnly": "Selectable in demo mode",
+    "slotsFull": "All slots are full",
+    "importFailed": "Import failed (invalid file or slots full)"
+  },
+  "layouts": {
+    "title": "My layouts",
+    "help": "Save the current grid arrangement (components and positions) to localStorage or a file (max 4 slots), then click a slot to reload it.",
+    "slots": "{{used}}/{{max}} slots",
+    "local": "local",
+    "file": "file",
+    "import": "import",
+    "saveLocal": "Save to localStorage",
+    "saveFile": "Export to file",
+    "export": "Export to file",
+    "delete": "Delete",
+    "load": "Load this layout",
+    "loaded": "Layout \"{{name}}\" loaded",
+    "count": "{{n}} components",
+    "empty": "No saved layouts",
+    "slotsFull": "All slots are full",
+    "importFailed": "Import failed (invalid file or slots full)"
+  },
+  "hyper": {
+    "title_train": "Hyperparameters",
+    "title_demo": "Demo options",
+    "help_train": "Configures the hyperparameters for the next run. Each panel keeps its own values, except the episode count which is shared across all panels.",
+    "help_demo": "In demo mode the agent uses its frozen pre-trained model. Only the number of demo episodes and the seed are adjustable. The episode count is shared across all panels.",
+    "episodes": "Episodes",
+    "episodesDemo": "Demo episodes",
+    "maxSteps": "Max steps",
+    "alpha": "Alpha (α)",
+    "gamma": "Gamma (γ)",
+    "epsilon": "Epsilon (ε)",
+    "seed": "Seed",
+    "frozen": "Pre-trained model · ε = 0",
+    "nextDemo": "Applied to the next demo run.",
+    "next": "Applied to the next run."
+  },
+  "stats": {
+    "title": "Statistics",
+    "help": "Live metrics: episode, step, cumulative reward, epsilon, explore/exploit mode and last action.",
+    "episode": "Episode",
+    "step": "Step",
+    "reward": "Reward",
+    "epsilon": "Epsilon",
+    "mode": "Mode",
+    "lastAction": "Last action",
+    "speed": "Speed",
+    "exploration": "Exploration",
+    "exploitation": "Exploitation",
+    "frozenExploit": "Pure exploitation",
+    "frozenEpsilon": "0 (frozen)",
+    "na": "n/a"
+  },
+  "qtable": {
+    "title": "Q-table",
+    "help": "Q-table heatmap: rows = states, columns = actions. Blue = negative value, grey ≈ zero, yellow = positive. Highlighted row = current state.",
+    "states": "{{n}} states",
+    "waiting": "waiting…",
+    "empty_noAgent": "Tabular agent only",
+    "empty_waiting": "Waiting for simulation…",
+    "frozen": "frozen",
+    "min": "min",
+    "max": "max"
+  },
+  "network": {
+    "title": "Neural network",
+    "help": "DQN network graph: Embedding → Hidden → Output. Nodes coloured by activation, edges by weight (yellow=positive, blue=negative). DQN only.",
+    "subtitle": "Embedding → Hidden → Output",
+    "dqnOnly": "DQN only",
+    "waiting": "Waiting for simulation…",
+    "layers": {
+      "emb": "Emb",
+      "hidden": "Hidden",
+      "output": "Output"
+    }
+  },
+  "charts": {
+    "reward": {
+      "title": "Reward / episode",
+      "help": "Cumulative reward per episode. Tends to increase as the agent learns."
+    },
+    "steps": {
+      "title": "Steps / episode",
+      "help": "Number of steps per episode. A high-performing agent uses fewer."
+    },
+    "epsilon": {
+      "title": "Epsilon / episode",
+      "help": "Epsilon decay: gradual shift from exploration to exploitation."
+    },
+    "waiting": "Waiting for simulation...",
+    "epLabel": "ep. {{n}}"
+  },
+  "metrics": {
+    "totalSteps": {
+      "title": "Total steps",
+      "suffix": "cumulative steps",
+      "help": "Total number of steps taken across the entire training run."
+    },
+    "reward": {
+      "title": "Avg reward",
+      "suffix": "reward",
+      "help": "Average reward per episode since the start of training."
+    },
+    "epsilon": {
+      "title": "Epsilon (ε)",
+      "suffix": "exploration",
+      "help": "Current exploration rate; decreases as learning progresses."
+    },
+    "avgSteps": {
+      "title": "Avg steps",
+      "suffix": "per episode",
+      "help": "Average number of steps per episode; decreases as the policy improves."
+    },
+    "maxReward": {
+      "title": "Max reward",
+      "help": "Best reward achieved in a single episode since the start."
+    },
+    "minSteps": {
+      "title": "Min steps",
+      "help": "Smallest number of steps completed in a single episode."
+    },
+    "vsPrev": "vs prev.",
+    "dash": "—"
+  },
+  "performance": {
+    "title": "Agent performance",
+    "help": "Episode success rate and distribution of actions taken by the agent, updated in real time.",
+    "successRate": "Success rate",
+    "totalActions": "Total actions",
+    "actions": {
+      "south": "South",
+      "north": "North",
+      "east": "East",
+      "west": "West",
+      "pickup": "Pick up",
+      "dropoff": "Drop off"
+    }
+  },
+  "chrono": {
+    "title": "Chrono",
+    "help": "Time elapsed since the current simulation started."
+  },
+  "about": {
+    "title": "Taxi Driver",
+    "description": "An agent learns to drive a taxi in the Taxi-v4 environment: pick up the passenger and drop them off in as few steps as possible, guided by rewards."
+  },
+  "speeds": {
+    "slow": "Slow",
+    "normal": "Normal",
+    "fast": "Fast",
+    "veryFast": "Very fast",
+    "max": "Max"
+  },
+  "agents": {
+    "Q": { "label": "Q-Learning", "sub": "Tabular" },
+    "S": { "label": "SARSA", "sub": "Tabular" },
+    "M": { "label": "Monte Carlo", "sub": "Tabular Episodic" },
+    "D": { "label": "DQN", "sub": "Deep Network" },
+    "B": { "label": "Random", "sub": "Chance" },
+    "R": { "label": "Heuristic", "sub": "Predefined Rules" }
+  },
+  "trash": {
+    "label": "Drop here to remove the component"
+  },
+  "widgetHelp": {
+    "label": "Help"
+  }
+}

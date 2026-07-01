@@ -1,0 +1,292 @@
+{
+  "status": {
+    "running": "En cours",
+    "stopped": "À l'arrêt",
+    "ready": "Prêt",
+    "connecting": "Connexion…",
+    "waiting": "En attente de la simulation…"
+  },
+  "mode": {
+    "train": "Entraînement",
+    "demo": "Démo",
+    "trainTitle": "Mode entraînement",
+    "demoTitle": "Mode démo (agents pré-entraînés)"
+  },
+  "topbar": {
+    "passengers1": "1 passager",
+    "passengers2": "2 passagers",
+    "simulations": "{{count}} simulations",
+    "theme": "Thème",
+    "reload": "Recharger",
+    "lang": "Langue"
+  },
+  "sidebar": {
+    "brand": "Taxi-Driver Lab",
+    "brandDesc": "Apprentissage par renforcement",
+    "search": "Rechercher…",
+    "clear": "Effacer",
+    "components": "Composants",
+    "collapseAll": "Tout replier",
+    "expandAll": "Tout déplier",
+    "settings": "Réglages",
+    "limitReached": "{{label}} — limite atteinte ({{used}}/{{max}})",
+    "limitCount": "{{label}} ({{used}}/{{max}})",
+    "menus": {
+      "map": "Carte",
+      "controls": "Contrôles",
+      "agent": "Agent",
+      "model": "Modèle",
+      "graphs": "Graphes",
+      "indicators": "Indicateurs",
+      "performance": "Performance",
+      "save": "Sauvegardes",
+      "about": "À propos",
+      "params": "Paramètres",
+      "help": "Aide"
+    },
+    "items": {
+      "terrain": "Terrain",
+      "play": "Lecture",
+      "speed": "Vitesse",
+      "agentChoice": "Choix de l'agent",
+      "hyper": "Hyperparamètres",
+      "stats": "Statistiques",
+      "qtable": "Q-table",
+      "network": "Réseau de neurones",
+      "reward": "Reward / épisode",
+      "steps": "Steps / épisode",
+      "epsilon": "Epsilon / épisode",
+      "totalSteps": "Pas total",
+      "avgReward": "Reward moyen",
+      "epsilonMetric": "Epsilon (ε)",
+      "avgSteps": "Pas moyen",
+      "maxReward": "Reward max",
+      "minSteps": "Pas min",
+      "performance": "Performance",
+      "chrono": "Chrono",
+      "savedAgents": "Mes agents",
+      "savedLayouts": "Mes configurations",
+      "about": "Présentation",
+      "theme": "Thème",
+      "language": "Langue",
+      "docs": "Documentation",
+      "aboutSettings": "À propos",
+      "soon": "Rien pour l'instant — du contenu arrivera plus tard."
+    }
+  },
+  "terrain": {
+    "title": "Terrain — Taxi-v4",
+    "double": " · 2 passagers",
+    "apiConnecting": "Connexion à l'API…",
+    "help": "Carte Taxi-v4 en temps réel : position du taxi, passager(s) et destination."
+  },
+  "play": {
+    "chip_demo": "Démo",
+    "chip_train": "Contrôles",
+    "help_demo": "Lance la démo avec l'agent pré-entraîné sélectionné (modèle figé, exploitation pure, sans apprentissage).",
+    "help_train": "Lance, met en pause ou arrête la simulation avec l'agent et les paramètres sélectionnés.",
+    "subtitle_demo": "Démo",
+    "subtitle_train": "Entraînement",
+    "episodes": "/ {{total}} épisodes",
+    "pause": "Pause",
+    "resume": "Reprendre",
+    "launch_demo": "Lancer démo",
+    "launch": "Lancer",
+    "stop": "Arrêter",
+    "speed": "Vitesse {{label}}",
+    "versions": "· {{count}} versions"
+  },
+  "speed": {
+    "title": "VITESSE",
+    "help": "Ajuste la vitesse de simulation de Lent (0.4s/pas) à Max (sans délai, 1 frame/25)."
+  },
+  "agent": {
+    "passengers1": "1 passager",
+    "passengers2": "2 passagers",
+    "help": "Sélectionnez l'algorithme (Q-Learning, SARSA, Monte Carlo, DQN, aléatoire ou heuristique) et le mode 1 ou 2 passagers.",
+    "pretrained": "Modèle pré-entraîné disponible"
+  },
+  "saved": {
+    "title": "Mes agents",
+    "help": "Sauvegardez un agent tabulaire entraîné (Q-table) en localStorage ou en fichier (4 slots max), puis sélectionnez-le en mode démo pour le rejouer.",
+    "slots": "{{used}}/{{max}} slots",
+    "local": "local",
+    "file": "fichier",
+    "import": "importer",
+    "saveLocal": "Sauver en localStorage",
+    "saveFile": "Exporter en fichier",
+    "export": "Exporter en fichier",
+    "delete": "Supprimer",
+    "double": "2 passagers",
+    "noModel": "Entraînez un agent tabulaire (Q-Learning, SARSA, Monte Carlo) pour pouvoir le sauvegarder.",
+    "tabularOnly": "Agent tabulaire seulement",
+    "empty": "Aucun agent sauvegardé",
+    "demoOnly": "Sélectionnable en mode démo",
+    "slotsFull": "Tous les slots sont pleins",
+    "importFailed": "Import impossible (fichier invalide ou slots pleins)"
+  },
+  "layouts": {
+    "title": "Mes configurations",
+    "help": "Sauvegardez l'agencement courant de la grille (composants et positions) en localStorage ou en fichier (4 slots max), puis cliquez un slot pour le recharger.",
+    "slots": "{{used}}/{{max}} slots",
+    "local": "local",
+    "file": "fichier",
+    "import": "importer",
+    "saveLocal": "Sauver en localStorage",
+    "saveFile": "Exporter en fichier",
+    "export": "Exporter en fichier",
+    "delete": "Supprimer",
+    "load": "Charger cette configuration",
+    "loaded": "Configuration « {{name}} » chargée",
+    "count": "{{n}} composants",
+    "empty": "Aucune configuration sauvegardée",
+    "slotsFull": "Tous les slots sont pleins",
+    "importFailed": "Import impossible (fichier invalide ou slots pleins)"
+  },
+  "hyper": {
+    "title_train": "Hyperparamètres",
+    "title_demo": "Options démo",
+    "help_train": "Configure les hyperparamètres du prochain lancement. Chaque panneau garde ses propres valeurs, sauf le nombre d'épisodes qui est partagé entre tous les panneaux.",
+    "help_demo": "En mode démo l'agent utilise son modèle pré-entraîné figé. Seuls le nombre d'épisodes de démonstration et le seed sont réglables. Le nombre d'épisodes est partagé entre tous les panneaux.",
+    "episodes": "Épisodes",
+    "episodesDemo": "Épisodes démo",
+    "maxSteps": "Pas max",
+    "alpha": "Alpha (α)",
+    "gamma": "Gamma (γ)",
+    "epsilon": "Epsilon (ε)",
+    "seed": "Seed",
+    "frozen": "Modèle pré-entraîné · ε = 0",
+    "nextDemo": "Appliqués au prochain lancement de démo.",
+    "next": "Appliqués au prochain lancement."
+  },
+  "stats": {
+    "title": "Statistiques",
+    "help": "Métriques live : épisode, pas, reward cumulé, epsilon, mode explore/exploit et dernière action.",
+    "episode": "Épisode",
+    "step": "Pas (step)",
+    "reward": "Reward",
+    "epsilon": "Epsilon",
+    "mode": "Mode",
+    "lastAction": "Dernière action",
+    "speed": "Vitesse",
+    "exploration": "Exploration",
+    "exploitation": "Exploitation",
+    "frozenExploit": "Exploitation pure",
+    "frozenEpsilon": "0 (figé)",
+    "na": "n/a"
+  },
+  "qtable": {
+    "title": "Q-table",
+    "help": "Heatmap de la Q-table : lignes = états, colonnes = actions. Bleu = valeur négative, gris ≈ zéro, jaune = positive. Ligne surlignée = état courant.",
+    "states": "{{n}} états",
+    "waiting": "en attente…",
+    "empty_noAgent": "Tabular agent uniquement",
+    "empty_waiting": "En attente de simulation…",
+    "frozen": "figée",
+    "min": "min",
+    "max": "max"
+  },
+  "network": {
+    "title": "Réseau de neurones",
+    "help": "Graphe du réseau DQN : Embedding → Caché → Sortie. Nœuds colorés par activation, arêtes par poids (jaune=positif, bleu=négatif). DQN uniquement.",
+    "subtitle": "Embedding → Caché → Sortie",
+    "dqnOnly": "DQN seulement",
+    "waiting": "En attente de simulation…",
+    "layers": {
+      "emb": "Emb",
+      "hidden": "Caché",
+      "output": "Sortie"
+    }
+  },
+  "charts": {
+    "reward": {
+      "title": "Reward / épisode",
+      "help": "Reward cumulé par épisode. Tend à augmenter à mesure que l'agent apprend."
+    },
+    "steps": {
+      "title": "Steps / épisode",
+      "help": "Nombre de pas par épisode. Un agent performant en utilise moins."
+    },
+    "epsilon": {
+      "title": "Epsilon / épisode",
+      "help": "Décroissance d'epsilon : passage progressif de l'exploration à l'exploitation."
+    },
+    "waiting": "En attente de simulation...",
+    "epLabel": "ép. {{n}}"
+  },
+  "metrics": {
+    "totalSteps": {
+      "title": "Pas total",
+      "suffix": "pas cumulés",
+      "help": "Nombre total de pas effectués sur l'ensemble de l'entraînement."
+    },
+    "reward": {
+      "title": "Reward moyen",
+      "suffix": "récompense",
+      "help": "Récompense moyenne par épisode depuis le début de l'entraînement."
+    },
+    "epsilon": {
+      "title": "Epsilon (ε)",
+      "suffix": "exploration",
+      "help": "Taux d'exploration courant ; décroît au fil de l'apprentissage."
+    },
+    "avgSteps": {
+      "title": "Pas moyen",
+      "suffix": "par épisode",
+      "help": "Nombre de pas moyen par épisode ; diminue à mesure que la politique s'optimise."
+    },
+    "maxReward": {
+      "title": "Reward max",
+      "help": "Meilleure récompense atteinte sur un épisode depuis le début."
+    },
+    "minSteps": {
+      "title": "Pas min",
+      "help": "Plus petit nombre de pas réalisé sur un épisode."
+    },
+    "vsPrev": "vs préc.",
+    "dash": "—"
+  },
+  "performance": {
+    "title": "Performance de l'agent",
+    "help": "Taux de réussite des épisodes et répartition des actions effectuées par l'agent, mis à jour en temps réel.",
+    "successRate": "Taux de réussite",
+    "totalActions": "Actions totales",
+    "actions": {
+      "south": "Sud",
+      "north": "Nord",
+      "east": "Est",
+      "west": "Ouest",
+      "pickup": "Récupérer",
+      "dropoff": "Déposer"
+    }
+  },
+  "chrono": {
+    "title": "Chrono",
+    "help": "Temps écoulé depuis le lancement de la simulation en cours."
+  },
+  "about": {
+    "title": "Taxi Driver",
+    "description": "Un agent apprend à conduire un taxi sur l'environnement Taxi-v4 : récupérer le passager et le déposer en un minimum de pas, guidé par les récompenses."
+  },
+  "speeds": {
+    "slow": "Lent",
+    "normal": "Normal",
+    "fast": "Rapide",
+    "veryFast": "Très rapide",
+    "max": "Max"
+  },
+  "agents": {
+    "Q": { "label": "Q-Learning", "sub": "Tabular" },
+    "S": { "label": "SARSA", "sub": "Tabular" },
+    "M": { "label": "Monte Carlo", "sub": "Tabular Épisodique" },
+    "D": { "label": "DQN", "sub": "Réseau profond" },
+    "B": { "label": "Aléatoire", "sub": "Hasard" },
+    "R": { "label": "Heuristique", "sub": "Règles Prédéfinies" }
+  },
+  "trash": {
+    "label": "Déposez ici pour supprimer le composant"
+  },
+  "widgetHelp": {
+    "label": "Aide"
+  }
+}

@@ -1,0 +1,10 @@
+# Taxi Driver - Simulation API (FastAPI + WebSocket)
+# Python 3.11.x
+
+fastapi>=0.110
+uvicorn[standard]>=0.29
+
+# Simulation core (Taxi-v4 + agents). Mirrors core/requirements.txt.
+gymnasium[toy-text]>=1.0
+numpy>=1.24.0
+torch>=2.0.0

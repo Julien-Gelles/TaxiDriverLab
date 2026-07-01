@@ -1,0 +1,8 @@
+# Frontend build context (./app). Everything below is rebuilt inside the image.
+node_modules
+dist
+.claude
+*.log
+
+# npm debug output.
+npm-debug.log*

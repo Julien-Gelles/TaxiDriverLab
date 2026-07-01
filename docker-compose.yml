@@ -1,0 +1,32 @@
+# Taxi Driver — full stack in one command:
+#
+#     docker compose up --build
+#
+# Frontend → http://localhost:5173
+# Backend  → ws://localhost:8000/ws  (REST: http://localhost:8000)
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    image: taxi-driver-backend
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+      args:
+        # Where the browser reaches the backend WebSocket. Change the host/port
+        # here (and the backend port mapping above) if you deploy elsewhere.
+        VITE_SIM_WS_URL: ws://localhost:8000/ws
+    image: taxi-driver-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped

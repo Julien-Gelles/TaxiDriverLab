@@ -1,0 +1,21 @@
+# Backend build context (repo root). Keep only api/ + core/ relevant files.
+.git
+.gitignore
+.venv
+core/venv
+memory
+.claude
+app/.claude
+
+# The frontend is built from its own context — never needed in the API image.
+app
+
+# Python caches / artefacts.
+**/__pycache__
+**/*.pyc
+**/*.pyo
+
+# Docs & docker meta.
+README.md
+**/README.md
+docker-compose.yml
