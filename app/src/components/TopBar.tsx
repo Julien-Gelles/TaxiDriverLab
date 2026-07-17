@@ -13,14 +13,11 @@ import {
   StatusPill,
   theme,
 } from "../styles";
-import type { SimStatus } from "../types";
+import type { SimStatus, StatusInfo } from "../types";
 
 export { StatusPill };
 
-export const statusInfo = (
-  status: SimStatus,
-  t: TFunction,
-): { text: string; color: string } => {
+export const statusInfo = (status: SimStatus, t: TFunction): StatusInfo => {
   switch (status) {
     case "running":
       return { text: t("status.running"), color: theme.yellow };

@@ -5,31 +5,18 @@ import {
   useEffect,
   useMemo,
   useState,
-  type ReactNode,
 } from "react";
-import type { AgentKey, SavedAgent } from "../types";
+import type {
+  AgentKey,
+  AgentSaveInput,
+  ChildrenProps,
+  SavedAgent,
+  SavedAgentsContextValue,
+} from "../types";
 
 export const MAX_SAVED_SLOTS = 4;
 const STORAGE_KEY = "taxi_saved_agents";
 const FILE_VERSION = 1;
-
-export type SaveInput = {
-  name: string;
-  agent: AgentKey;
-  double: boolean;
-  qTable: number[][];
-};
-
-type SavedAgentsContextValue = {
-  agents: SavedAgent[];
-  maxSlots: number;
-  hasFreeSlot: boolean;
-  saveLocal: (input: SaveInput) => boolean;
-  saveFile: (input: SaveInput) => void;
-  exportFile: (id: string) => void;
-  importFile: (file: File) => Promise<boolean>;
-  remove: (id: string) => void;
-};
 
 const SavedAgentsContext = createContext<SavedAgentsContextValue | null>(null);
 
@@ -113,7 +100,7 @@ const downloadJson = (agent: SavedAgent) => {
   URL.revokeObjectURL(url);
 };
 
-export const SavedAgentsProvider = ({ children }: { children: ReactNode }) => {
+export const SavedAgentsProvider = ({ children }: ChildrenProps) => {
   const [agents, setAgents] = useState<SavedAgent[]>(() => loadPersisted());
 
   // Keep localStorage in sync with the persisted subset whenever the list changes.
@@ -122,7 +109,7 @@ export const SavedAgentsProvider = ({ children }: { children: ReactNode }) => {
   }, [agents]);
 
   const make = useCallback(
-    (input: SaveInput, persisted: boolean): SavedAgent => ({
+    (input: AgentSaveInput, persisted: boolean): SavedAgent => ({
       id: newId(),
       name: input.name.trim() || "agent",
       agent: input.agent,
@@ -135,7 +122,7 @@ export const SavedAgentsProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const saveLocal = useCallback(
-    (input: SaveInput): boolean => {
+    (input: AgentSaveInput): boolean => {
       let ok = false;
       setAgents((prev) => {
         if (prev.length >= MAX_SAVED_SLOTS) return prev;
@@ -148,7 +135,7 @@ export const SavedAgentsProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const saveFile = useCallback(
-    (input: SaveInput) => {
+    (input: AgentSaveInput) => {
       const agent = make(input, false);
       downloadJson(agent);
       // Also occupy a slot if there's room (session entry — the file is durable).

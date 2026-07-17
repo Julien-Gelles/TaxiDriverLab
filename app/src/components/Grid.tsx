@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -43,7 +36,6 @@ import {
   useSetActiveCount,
   useSavedLayouts,
   GridLayoutContext,
-  type GridLayoutApi,
   SIDEBAR_COLS,
   TOPBAR_ROWS,
 } from "../hooks";
@@ -63,7 +55,14 @@ import {
   TopbarInner,
   theme,
 } from "../styles";
-import type { GridBoardApi, LayoutItem, Widget } from "../types";
+import type {
+  GridBoardApi,
+  GridLayoutApi,
+  GridPreviewRect,
+  LayoutItem,
+  Widget,
+  WidgetCatalogEntry,
+} from "../types";
 import { widgetDrag, widgetLimit } from "./widgetDrag";
 
 const LAYOUT_10: LayoutItem[] = [
@@ -120,9 +119,7 @@ const LAYOUT_12: LayoutItem[] = [
 const defaultLayoutFor = (cols: number): LayoutItem[] =>
   cols <= 10 ? LAYOUT_10 : cols === 11 ? LAYOUT_11 : LAYOUT_12;
 
-type CatalogEntry = { w: number; h: number; make: () => ReactNode };
-
-const CATALOG: Record<string, CatalogEntry> = {
+const CATALOG: Record<string, WidgetCatalogEntry> = {
   about: { w: 11, h: 3, make: () => <AboutPanel /> },
   agent: { w: 5, h: 4, make: () => <AgentChoice /> },
   saved: { w: 6, h: 4, make: () => <SavedAgents /> },
@@ -286,12 +283,7 @@ export const Grid = () => {
 
   const [removing, setRemoving] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
-  const [preview, setPreview] = useState<{
-    x: number;
-    y: number;
-    w: number;
-    h: number;
-  } | null>(null);
+  const [preview, setPreview] = useState<GridPreviewRect | null>(null);
 
   const cellAt = (clientX: number, clientY: number, w: number) => {
     const rect = stageRef.current!.getBoundingClientRect();

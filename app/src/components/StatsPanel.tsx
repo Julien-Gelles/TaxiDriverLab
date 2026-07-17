@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 
 import { useSimulation, useSimConfig, SPEED_PRESETS } from "../hooks";
 import { DefautWidgetBox, StatList, StatRow, StatusPill, WidgetTitle } from "../styles";
+import type { StatEntry } from "../types";
 import { WidgetHelp } from "./WidgetHelp";
 import { VersionTag } from "./VersionTag";
 import { statusInfo } from "./TopBar";
@@ -32,7 +33,7 @@ export const StatsPanel = () => {
         : t("stats.exploitation")
       : "—";
 
-  const rows: [string, string][] = [
+  const rows: StatEntry[] = [
     [t("stats.episode"), step ? `${step.episode} / ${step.episodes}` : "—"],
     [t("stats.step"), step ? String(step.step) : "—"],
     [t("stats.reward"), step ? step.reward.toFixed(1) : "—"],

@@ -7,8 +7,7 @@ import {
   AGENTS,
   SPEED_PRESETS,
 } from "../hooks";
-import type { SimConfigValue } from "../hooks";
-import type { SavedAgent, StartParams } from "../types";
+import type { SavedAgent, SimConfigValue, StartParams } from "../types";
 import {
   ControlButtons,
   ControlChip,

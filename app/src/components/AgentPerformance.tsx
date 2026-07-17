@@ -26,6 +26,7 @@ import {
   TotalValue,
   theme,
 } from "../styles";
+import type { DonutProps } from "../types";
 import { WidgetHelp } from "./WidgetHelp";
 import { VersionTag } from "./VersionTag";
 
@@ -33,7 +34,7 @@ const DASH = "—";
 const RING = 160;
 const STROKE = 16;
 
-const Donut = ({ rate, label }: { rate: number | null; label: string }) => {
+const Donut = ({ rate, label }: DonutProps) => {
   const r = (RING - STROKE) / 2;
   const c = 2 * Math.PI * r;
   const pct = rate ?? 0;

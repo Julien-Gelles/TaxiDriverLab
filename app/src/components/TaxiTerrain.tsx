@@ -11,6 +11,11 @@ import {
   WidgetTitle,
   theme,
 } from "../styles";
+import type {
+  DoublePassengersProps,
+  SinglePassengerProps,
+  StepState,
+} from "../types";
 import { WidgetHelp } from "./WidgetHelp";
 import { VersionTag } from "./VersionTag";
 import { statusInfo } from "./TopBar";
@@ -165,11 +170,7 @@ function SinglePassenger({
   step,
   locations,
   passengerInTaxi,
-}: {
-  step: ReturnType<typeof useSimulation>["step"];
-  locations: { id: number; row: number; col: number }[];
-  passengerInTaxi: number;
-}) {
+}: SinglePassengerProps) {
   const destination = step?.destination;
   const passenger = step?.passenger;
 
@@ -200,12 +201,7 @@ function DoublePassengers({
   locations,
   passengerInTaxi,
   passengerDelivered,
-}: {
-  step: ReturnType<typeof useSimulation>["step"];
-  locations: { id: number; row: number; col: number }[];
-  passengerInTaxi: number;
-  passengerDelivered: number;
-}) {
+}: DoublePassengersProps) {
   if (!step) return null;
 
   const { p1Loc, p1Dest, p2Loc, p2Dest } = step;
@@ -263,7 +259,7 @@ function DoublePassengers({
 }
 
 function taxiEmoji(
-  step: ReturnType<typeof useSimulation>["step"],
+  step: StepState | null,
   passengerInTaxi: number,
   isDouble: boolean,
 ): string {

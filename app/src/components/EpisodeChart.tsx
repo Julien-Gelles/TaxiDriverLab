@@ -18,10 +18,13 @@ import {
   WidgetTitle,
   theme,
 } from "../styles";
+import type {
+  ChartHover,
+  ChartHoverPoint,
+  EpisodeChartProps,
+} from "../types";
 import { movingAverage, smoothWindow } from "../utils/smooth";
 import { WidgetHelp } from "./WidgetHelp";
-
-type Metric = "reward" | "steps" | "epsilon";
 
 const VB_W = 300;
 const VB_H = 160;
@@ -30,7 +33,7 @@ const PAD_R = 8;
 const PAD_T = 10;
 const PAD_B = 18;
 
-export const EpisodeChart = ({ metric }: { metric: Metric }) => {
+export const EpisodeChart = ({ metric }: EpisodeChartProps) => {
   const { t } = useTranslation();
   const { slots, activeCount } = useSimulations();
   const gradId = useId();
@@ -84,8 +87,7 @@ export const EpisodeChart = ({ metric }: { metric: Metric }) => {
     return { series, yMin, yMax, baseY, single: series.length === 1 };
   }, [slots, metric]);
 
-  type HoverPoint = { letter: string; color: string; sy: number; val: number };
-  const [hover, setHover] = useState<{ sx: number; ep: number; points: HoverPoint[] } | null>(null);
+  const [hover, setHover] = useState<ChartHover | null>(null);
   const anchorSeries = model?.series[0] ?? null;
 
   const handleMove = (e: MouseEvent<SVGSVGElement>) => {
@@ -101,7 +103,7 @@ export const EpisodeChart = ({ metric }: { metric: Metric }) => {
       if (d < bestDist) { bestDist = d; anchor = pt; }
     }
 
-    const points: HoverPoint[] = model.series.map((s) => {
+    const points: ChartHoverPoint[] = model.series.map((s) => {
       let near = s.plotted[0];
       let dist = Infinity;
       for (const pt of s.plotted) {

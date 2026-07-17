@@ -1,4 +1,4 @@
-import { useId, useMemo, type ReactNode } from "react";
+import { useId, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useSimulation } from "../hooks";
@@ -13,7 +13,13 @@ import {
   SparkSvg,
   theme,
 } from "../styles";
-import type { RunSummary } from "../types";
+import type {
+  MetricCardProps,
+  MetricDeltaInfo,
+  MetricDeltaOptions,
+  RunSummary,
+  SparklineProps,
+} from "../types";
 import { movingAverage, smoothWindow } from "../utils/smooth";
 import { WidgetHelp } from "./WidgetHelp";
 import { VersionTag } from "./VersionTag";
@@ -23,7 +29,7 @@ const DASH = "—";
 const SPARK_W = 78;
 const SPARK_H = 34;
 
-const Sparkline = ({ series, color }: { series: number[]; color: string }) => {
+const Sparkline = ({ series, color }: SparklineProps) => {
   const gradId = useId();
   const geo = useMemo(() => {
     const raw = series.filter((v) => Number.isFinite(v));
@@ -54,14 +60,12 @@ const Sparkline = ({ series, color }: { series: number[]; color: string }) => {
   );
 };
 
-type Delta = { text: string; color: string };
-
 const buildDelta = (
   summaries: RunSummary[],
   pick: (s: RunSummary) => number | null,
-  { higherIsBetter, digits }: { higherIsBetter: boolean; digits: number },
+  { higherIsBetter, digits }: MetricDeltaOptions,
   vsPrev: string
-): Delta => {
+): MetricDeltaInfo => {
   const last = summaries.at(-1);
   const prev = summaries.at(-2);
   if (!last || !prev) return { text: DASH, color: theme.grey };
@@ -80,16 +84,6 @@ const buildDelta = (
       ? theme.success
       : theme.danger;
   return { text: `${arrow} ${sign}${Math.abs(diff).toFixed(digits)} ${vsPrev}`, color };
-};
-
-type MetricCardProps = {
-  title: string;
-  value: ReactNode;
-  suffix?: string;
-  series?: number[];
-  color?: string;
-  delta: Delta;
-  help: string;
 };
 
 const MetricCard = ({

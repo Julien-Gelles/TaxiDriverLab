@@ -1,11 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useRef,
-  useState,
-  type DragEvent,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useRef, useState, type DragEvent } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Activity,
@@ -25,6 +18,14 @@ import {
   X,
 } from "lucide-react";
 import { useSimConfig } from "../hooks";
+import type {
+  ChildrenProps,
+  SidebarHeaderContentProps,
+  SidebarMenuDef,
+  SidebarMenuProps,
+  SidebarSearchValue,
+  WidgetCountProviderProps,
+} from "../types";
 import {
   Badge,
   Brand,
@@ -77,12 +78,12 @@ const buildDragGhost = (type: string): HTMLElement | null => {
   return holder;
 };
 
-const SearchContext = createContext<{ q: string; setQ: (v: string) => void }>({
+const SearchContext = createContext<SidebarSearchValue>({
   q: "",
   setQ: () => {},
 });
 
-export const SidebarProvider = ({ children }: { children: ReactNode }) => {
+export const SidebarProvider = ({ children }: ChildrenProps) => {
   const [q, setQ] = useState("");
   return (
     <SearchContext.Provider value={{ q, setQ }}>
@@ -98,10 +99,7 @@ const WidgetCountContext = createContext<Record<string, number>>({});
 export const WidgetCountProvider = ({
   counts,
   children,
-}: {
-  counts: Record<string, number>;
-  children: ReactNode;
-}) => (
+}: WidgetCountProviderProps) => (
   <WidgetCountContext.Provider value={counts}>
     {children}
   </WidgetCountContext.Provider>
@@ -109,7 +107,9 @@ export const WidgetCountProvider = ({
 
 const useWidgetCounts = () => useContext(WidgetCountContext);
 
-export const SidebarHeaderContent = ({ rowHeight }: { rowHeight: number }) => {
+export const SidebarHeaderContent = ({
+  rowHeight,
+}: SidebarHeaderContentProps) => {
   const { t } = useTranslation();
   const { q, setQ } = useSidebarSearch();
   const { mode } = useSimConfig();
@@ -162,10 +162,7 @@ const thumb = (id: string, demo: boolean): string | undefined => {
   return THUMBS[`../assets/components/${id}.webp`];
 };
 
-type Item = { tKey: string; id?: string; note?: boolean };
-type MenuDef = { tKey: string; Icon: typeof MapIcon; items: Item[] };
-
-const COMPONENT_MENUS: MenuDef[] = [
+const COMPONENT_MENUS: SidebarMenuDef[] = [
   { tKey: "map", Icon: MapIcon, items: [{ tKey: "terrain", id: "terrain" }] },
   {
     tKey: "controls",
@@ -232,7 +229,7 @@ const COMPONENT_MENUS: MenuDef[] = [
   { tKey: "about", Icon: Info, items: [{ tKey: "about", id: "about" }] },
 ];
 
-const SETTINGS_MENUS: MenuDef[] = [
+const SETTINGS_MENUS: SidebarMenuDef[] = [
   {
     tKey: "params",
     Icon: SlidersHorizontal,
@@ -251,13 +248,7 @@ const Menu = ({
   query,
   open: openProp,
   onToggle,
-}: {
-  def: MenuDef;
-  badge?: boolean;
-  query?: string;
-  open?: boolean;
-  onToggle?: () => void;
-}) => {
+}: SidebarMenuProps) => {
   const { t } = useTranslation();
   const { mode } = useSimConfig();
   const isDemo = mode === "demo";

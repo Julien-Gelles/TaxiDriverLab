@@ -1,6 +1,6 @@
-import type { AgentKey } from "../types";
+import type { AgentOption, SpeedPreset } from "../types";
 
-export const SPEED_PRESETS: { tKey: string; delay: number }[] = [
+export const SPEED_PRESETS: SpeedPreset[] = [
   { tKey: "speeds.slow", delay: 0.4 },
   { tKey: "speeds.normal", delay: 0.12 },
   { tKey: "speeds.fast", delay: 0.03 },
@@ -8,7 +8,7 @@ export const SPEED_PRESETS: { tKey: string; delay: number }[] = [
   { tKey: "speeds.max", delay: 0.0 },
 ];
 
-export const AGENTS: { key: AgentKey; tKey: string; subKey: string }[] = [
+export const AGENTS: AgentOption[] = [
   { key: "Q", tKey: "agents.Q.label", subKey: "agents.Q.sub" },
   { key: "S", tKey: "agents.S.label", subKey: "agents.S.sub" },
   { key: "M", tKey: "agents.M.label", subKey: "agents.M.sub" },

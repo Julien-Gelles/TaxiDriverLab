@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-
-// Which pretrained models the backend found in core/save/.
-export type PretrainedEntry = { agent: string; double: boolean };
+import type { PretrainedApi, PretrainedEntry } from "../types";
 
 // REST origin derived from the WS URL (ws://host/ws → http://host).
 const API_BASE = (() => {
@@ -11,7 +9,7 @@ const API_BASE = (() => {
   return ws.replace(/^ws/, "http").replace(/\/ws$/, "");
 })();
 
-export const usePretrained = () => {
+export const usePretrained = (): PretrainedApi => {
   const [available, setAvailable] = useState<PretrainedEntry[]>([]);
 
   const refresh = useCallback(() => {

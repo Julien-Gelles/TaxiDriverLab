@@ -6,8 +6,9 @@ import "react-tooltip/dist/react-tooltip.css";
 
 import { WidgetHelpButton } from "../styles";
 import { theme } from "../styles/theme";
+import type { WidgetHelpProps } from "../types";
 
-export const WidgetHelp = ({ content }: { content: string }) => {
+export const WidgetHelp = ({ content }: WidgetHelpProps) => {
   const id = useId();
   const { t } = useTranslation();
   return (

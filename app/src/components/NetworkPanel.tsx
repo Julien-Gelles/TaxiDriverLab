@@ -11,6 +11,7 @@ import {
   WidgetTitle,
   theme,
 } from "../styles";
+import type { LayerGroup, NetworkEdge } from "../types";
 import { qValueToBlueYellow, rgbCss } from "../utils/qColor";
 import { WidgetHelp } from "./WidgetHelp";
 import { VersionTag } from "./VersionTag";
@@ -20,10 +21,10 @@ const EDGES_PER_NODE = 3;
 const VB_W = 320;
 const VB_H = 200;
 
-const layerGroups = (n: number, max: number): [number, number][] => {
+const layerGroups = (n: number, max: number): LayerGroup[] => {
   if (n <= 0) return [];
   if (n <= max) return Array.from({ length: n }, (_, i) => [i, i + 1]);
-  const groups: [number, number][] = [];
+  const groups: LayerGroup[] = [];
   for (let k = 0; k < max; k++) {
     const s = Math.floor((k * n) / max);
     let e = Math.floor(((k + 1) * n) / max);
@@ -39,13 +40,13 @@ const mean = (arr: number[], s: number, e: number): number => {
   return sum / (e - s);
 };
 
-const groupVector = (v: number[], groups: [number, number][]): number[] =>
+const groupVector = (v: number[], groups: LayerGroup[]): number[] =>
   groups.map(([s, e]) => (v.length ? mean(v, s, e) : 0));
 
 const groupMatrix = (
   W: number[][],
-  rowGroups: [number, number][],
-  colGroups: [number, number][]
+  rowGroups: LayerGroup[],
+  colGroups: LayerGroup[]
 ): number[][] =>
   rowGroups.map(([rs, re]) =>
     colGroups.map(([cs, ce]) => {
@@ -96,8 +97,7 @@ export const NetworkPanel = () => {
       groupMatrix(wBetween[1], groups[2], groups[1]),
     ];
 
-    type Edge = { x1: number; y1: number; x2: number; y2: number; color: string };
-    const edges: Edge[] = [];
+    const edges: NetworkEdge[] = [];
     for (let li = 0; li < 2; li++) {
       const wg = groupedW[li];
       if (!wg.length) continue;

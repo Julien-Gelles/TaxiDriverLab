@@ -1,4 +1,6 @@
-export const widgetDrag: { type: string | null } = { type: null };
+import type { WidgetDragState } from "../types";
+
+export const widgetDrag: WidgetDragState = { type: null };
 
 export const WIDGET_LIMIT_DEFAULT = 3;
 export const WIDGET_LIMIT_OVERRIDES: Record<string, number> = {

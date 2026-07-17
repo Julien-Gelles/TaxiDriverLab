@@ -1,4 +1,4 @@
-// Types mirroring the simulation API WebSocket protocol.
+import type { SimConfigValue } from "./config.type";
 
 export type Cell = { row: number; col: number };
 
@@ -133,4 +133,28 @@ export type SimContextValue = {
   resume: () => void;
   setSpeed: (delay: number) => void;
   stop: () => void;
+};
+
+export type SimulationsContextValue = {
+  sims: SimContextValue[];
+  configs: SimConfigValue[];
+  activeCount: number;
+};
+
+export type SimulationSlot = {
+  index: number;
+  letter: string;
+  sim: SimContextValue;
+  config: SimConfigValue;
+};
+
+export type SimulationSlots = {
+  slots: SimulationSlot[];
+  activeCount: number;
+};
+
+export type WidgetVersion = {
+  index: number;
+  letter: string;
+  label: string;
 };

@@ -13,7 +13,7 @@ import {
   DefautWidgetBox,
   StatusPill,
 } from "../styles";
-import type { SimStatus } from "../types";
+import type { ChronoSegProps, SimStatus } from "../types";
 import { statusInfo } from "./TopBar";
 import { WidgetHelp } from "./WidgetHelp";
 
@@ -114,6 +114,6 @@ export const Chrono = () => {
   );
 };
 
-const Seg = ({ value, dim }: { value: string; dim?: boolean }) => (
+const Seg = ({ value, dim }: ChronoSegProps) => (
   <ChronoSeg $dim={dim}>{value}</ChronoSeg>
 );

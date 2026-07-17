@@ -1,10 +1,5 @@
 import { createContext, useContext } from "react";
-import type { LayoutItem } from "../types";
-
-export type GridLayoutApi = {
-  getCurrentLayout: () => LayoutItem[];
-  applyLayout: (items: LayoutItem[]) => void;
-};
+import type { GridLayoutApi } from "../types";
 
 export const GridLayoutContext = createContext<GridLayoutApi | null>(null);
 

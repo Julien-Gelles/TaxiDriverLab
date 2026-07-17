@@ -6,7 +6,6 @@ import {
   useMemo,
   useRef,
   useState,
-  type ReactNode,
 } from "react";
 import type {
   Layout,
@@ -14,20 +13,21 @@ import type {
   EpisodePoint,
   SimStatus,
   StartParams,
+  ChildrenProps,
+  SimConfigValue,
   SimContextValue,
+  SimulationsContextValue,
+  SimulationSlot,
+  SimulationSlots,
   Caps,
   QTablePayload,
   Activations,
   Weights,
   RunSummary,
   SimMode,
+  WidgetVersion,
 } from "../types";
-import {
-  usePerVersionConfig,
-  useSharedConfig,
-  mergeConfig,
-  type SimConfigValue,
-} from "./useSimConfig";
+import { usePerVersionConfig, useSharedConfig, mergeConfig } from "./useSimConfig";
 
 const MAX_SLOTS = 3;
 export const VERSION_LETTERS = ["A", "B", "C"] as const;
@@ -224,17 +224,11 @@ const useSimulationEngine = (active: boolean): SimContextValue => {
   };
 };
 
-type SimulationsContextValue = {
-  sims: SimContextValue[]; // length MAX_SLOTS
-  configs: SimConfigValue[]; // length MAX_SLOTS
-  activeCount: number;
-};
-
 const SimulationsContext = createContext<SimulationsContextValue | null>(null);
 const SetActiveCountContext = createContext<(n: number) => void>(() => {});
 export const VersionContext = createContext<number>(0);
 
-export const SimulationsProvider = ({ children }: { children: ReactNode }) => {
+export const SimulationsProvider = ({ children }: ChildrenProps) => {
   const [activeCount, setActiveCountRaw] = useState(1);
   const setActiveCount = useCallback(
     (n: number) => setActiveCountRaw(Math.max(1, Math.min(MAX_SLOTS, n))),
@@ -309,17 +303,7 @@ export const useSimConfig = (): SimConfigValue => {
   return ctx.configs[version] ?? ctx.configs[0];
 };
 
-export type SimulationSlot = {
-  index: number;
-  letter: string;
-  sim: SimContextValue;
-  config: SimConfigValue;
-};
-
-export const useSimulations = (): {
-  slots: SimulationSlot[];
-  activeCount: number;
-} => {
+export const useSimulations = (): SimulationSlots => {
   const ctx = useSimulationsContext();
   const slots: SimulationSlot[] = [];
   for (let i = 0; i < ctx.activeCount; i++) {
@@ -333,11 +317,7 @@ export const useSimulations = (): {
   return { slots, activeCount: ctx.activeCount };
 };
 
-export const useWidgetVersion = (): {
-  index: number;
-  letter: string;
-  label: string;
-} => {
+export const useWidgetVersion = (): WidgetVersion => {
   const ctx = useContext(SimulationsContext);
   const version = useContext(VersionContext);
   const activeCount = ctx?.activeCount ?? 1;

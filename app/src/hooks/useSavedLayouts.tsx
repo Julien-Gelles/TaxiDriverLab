@@ -5,32 +5,19 @@ import {
   useEffect,
   useMemo,
   useState,
-  type ReactNode,
 } from "react";
-import type { LayoutItem, SavedLayout } from "../types";
+import type {
+  ChildrenProps,
+  LayoutItem,
+  LayoutSaveInput,
+  SavedLayout,
+  SavedLayoutsContextValue,
+} from "../types";
 
 export const MAX_SAVED_LAYOUT_SLOTS = 4;
 const STORAGE_KEY = "taxi_saved_layouts";
 const LAST_KEY = "taxi_last_layout";
 const FILE_VERSION = 1;
-
-export type LayoutSaveInput = {
-  name: string;
-  items: LayoutItem[];
-};
-
-type SavedLayoutsContextValue = {
-  layouts: SavedLayout[];
-  maxSlots: number;
-  hasFreeSlot: boolean;
-  saveLocal: (input: LayoutSaveInput) => boolean;
-  saveFile: (input: LayoutSaveInput) => void;
-  exportFile: (id: string) => void;
-  importFile: (file: File) => Promise<boolean>;
-  remove: (id: string) => void;
-  lastLayout: LayoutItem[] | null;
-  setLastLayout: (items: LayoutItem[]) => void;
-};
 
 const SavedLayoutsContext = createContext<SavedLayoutsContextValue | null>(
   null,
@@ -144,7 +131,7 @@ const downloadJson = (layout: SavedLayout) => {
   URL.revokeObjectURL(url);
 };
 
-export const SavedLayoutsProvider = ({ children }: { children: ReactNode }) => {
+export const SavedLayoutsProvider = ({ children }: ChildrenProps) => {
   const [layouts, setLayouts] = useState<SavedLayout[]>(() => loadPersisted());
   const [lastLayout] = useState<LayoutItem[] | null>(() => loadLastLayout());
   const setLastLayout = useCallback(

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useIsPortrait } from "./useIsPortrait";
+import type { GridCount } from "../types";
 import { theme } from "../styles/theme";
 
 const COLUMNS_PORTRAIT = 10;
@@ -12,7 +13,7 @@ export const MIN_GRID_COLS = 10;
 
 const MARGIN = theme.appMargin * 2;
 
-export const useGridCount = (): { cols: number; rows: number } => {
+export const useGridCount = (): GridCount => {
   const isPortrait = useIsPortrait();
   const [dimensions, setDimensions] = useState(() => ({
     width: typeof window !== "undefined" ? window.innerWidth : 0,

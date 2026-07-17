@@ -12,10 +12,9 @@ import {
   NumberInput,
   WidgetTitle,
 } from "../styles";
+import type { HyperParamField } from "../types";
 import { WidgetHelp } from "./WidgetHelp";
 import { VersionTag } from "./VersionTag";
-
-type Field = { label: string; value: number; set: (n: number) => void; step: number; min?: number; max?: number };
 
 export const HyperParams = () => {
   const { t } = useTranslation();
@@ -59,7 +58,7 @@ export const HyperParams = () => {
   const setSeedBoth = sync(setLocalSeed, setSeed);
   const setMaxStepsBoth = sync(setLocalMaxStepsOverride, setMaxSteps);
 
-  const trainFields: Field[] = [
+  const trainFields: HyperParamField[] = [
     { label: t("hyper.episodes"), value: episodes, set: setEpisodes, step: 10, min: 1 },
     { label: t("hyper.maxSteps"), value: localMaxSteps, set: setMaxStepsBoth, step: 50, min: 1 },
     { label: t("hyper.alpha"), value: localAlpha, set: setAlphaBoth, step: 0.01, min: 0, max: 1 },
@@ -68,7 +67,7 @@ export const HyperParams = () => {
     { label: t("hyper.seed"), value: localSeed, set: setSeedBoth, step: 1 },
   ];
 
-  const demoFields: Field[] = [
+  const demoFields: HyperParamField[] = [
     { label: t("hyper.episodesDemo"), value: episodes, set: setEpisodes, step: 1, min: 1 },
     { label: t("hyper.seed"), value: localSeed, set: setSeedBoth, step: 1 },
   ];
