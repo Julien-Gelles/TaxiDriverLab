@@ -1,8 +1,6 @@
 import styled from "styled-components";
 import { theme } from "./theme";
 
-// ── Success donut ────────────────────────────────────────────────────────────
-
 export const DonutWrap = styled.div<{ $size: number }>`
   position: relative;
   width: ${({ $size }) => $size}px;
@@ -36,8 +34,6 @@ export const DonutLabel = styled.span`
   color: ${theme.grey};
   margin-top: 5px;
 `;
-
-// ── Card layout ──────────────────────────────────────────────────────────────
 
 export const PerfHeader = styled.div`
   display: flex;
@@ -77,8 +73,6 @@ export const StatsCol = styled.div`
   gap: 14px;
 `;
 
-// ── Total actions row ────────────────────────────────────────────────────────
-
 export const TotalRow = styled.div`
   display: flex;
   align-items: center;
@@ -113,8 +107,6 @@ export const TotalValue = styled.span`
   font-weight: 800;
   color: ${theme.ink};
 `;
-
-// ── Action breakdown ─────────────────────────────────────────────────────────
 
 export const ActionGrid = styled.div`
   display: grid;

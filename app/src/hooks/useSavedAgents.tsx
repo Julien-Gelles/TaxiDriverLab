@@ -9,16 +9,10 @@ import {
 } from "react";
 import type { AgentKey, SavedAgent } from "../types";
 
-// User-saved agents: tabular models captured from in-app training runs. Up to
-// MAX_SLOTS live in the list at once; persisted ones are mirrored to
-// localStorage, session ones (saved-to-file / imported without a free… they
-// still take a slot) vanish on reload — the downloaded file is their durable
-// copy. See SavedAgent in types for the per-entry semantics.
 export const MAX_SAVED_SLOTS = 4;
 const STORAGE_KEY = "taxi_saved_agents";
 const FILE_VERSION = 1;
 
-// The minimal data needed to mint a new saved agent (id/createdAt are added).
 export type SaveInput = {
   name: string;
   agent: AgentKey;
@@ -30,16 +24,10 @@ type SavedAgentsContextValue = {
   agents: SavedAgent[];
   maxSlots: number;
   hasFreeSlot: boolean;
-  // Persist to localStorage and fill a slot. Returns false if no slot is free.
   saveLocal: (input: SaveInput) => boolean;
-  // Download a .json file; also fill a (session) slot if one is free.
   saveFile: (input: SaveInput) => void;
-  // Download an already-saved agent as a .json file.
   exportFile: (id: string) => void;
-  // Import a .json file into a session slot. Resolves false if no slot is free
-  // or the file is invalid.
   importFile: (file: File) => Promise<boolean>;
-  // Remove from the list; if it was persisted, also drop it from localStorage.
   remove: (id: string) => void;
 };
 
@@ -76,7 +64,7 @@ const writePersisted = (agents: SavedAgent[]) => {
   try {
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify(agents.filter((a) => a.persisted))
+      JSON.stringify(agents.filter((a) => a.persisted)),
     );
   } catch {
     /* quota exceeded / unavailable — the in-memory list still works this session */
@@ -112,7 +100,9 @@ const downloadJson = (agent: SavedAgent) => {
     qTable: agent.qTable,
     createdAt: agent.createdAt,
   };
-  const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+  const blob = new Blob([JSON.stringify(payload)], {
+    type: "application/json",
+  });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -141,7 +131,7 @@ export const SavedAgentsProvider = ({ children }: { children: ReactNode }) => {
       persisted,
       createdAt: Date.now(),
     }),
-    []
+    [],
   );
 
   const saveLocal = useCallback(
@@ -154,7 +144,7 @@ export const SavedAgentsProvider = ({ children }: { children: ReactNode }) => {
       });
       return ok;
     },
-    [make]
+    [make],
   );
 
   const saveFile = useCallback(
@@ -162,9 +152,11 @@ export const SavedAgentsProvider = ({ children }: { children: ReactNode }) => {
       const agent = make(input, false);
       downloadJson(agent);
       // Also occupy a slot if there's room (session entry — the file is durable).
-      setAgents((prev) => (prev.length >= MAX_SAVED_SLOTS ? prev : [...prev, agent]));
+      setAgents((prev) =>
+        prev.length >= MAX_SAVED_SLOTS ? prev : [...prev, agent],
+      );
     },
-    [make]
+    [make],
   );
 
   const exportFile = useCallback(
@@ -172,7 +164,7 @@ export const SavedAgentsProvider = ({ children }: { children: ReactNode }) => {
       const agent = agents.find((a) => a.id === id);
       if (agent) downloadJson(agent);
     },
-    [agents]
+    [agents],
   );
 
   const importFile = useCallback(
@@ -185,7 +177,10 @@ export const SavedAgentsProvider = ({ children }: { children: ReactNode }) => {
       }
       const o = parsed as Record<string, unknown>;
       const candidate = {
-        name: typeof o?.name === "string" ? o.name : file.name.replace(/\.json$/i, ""),
+        name:
+          typeof o?.name === "string"
+            ? o.name
+            : file.name.replace(/\.json$/i, ""),
         agent: o?.agent,
         double: Boolean(o?.double),
         qTable: o?.qTable,
@@ -197,18 +192,26 @@ export const SavedAgentsProvider = ({ children }: { children: ReactNode }) => {
         if (prev.length >= MAX_SAVED_SLOTS) return prev;
         // Dedupe against the freshest list so re-importing the same agent yields
         // "name-1", "name-2", … instead of an identical duplicate.
-        const name = uniqueName(candidate.name, new Set(prev.map((a) => a.name)));
+        const name = uniqueName(
+          candidate.name,
+          new Set(prev.map((a) => a.name)),
+        );
         return [
           ...prev,
           make(
-            { name, agent: candidate.agent, double: candidate.double, qTable: candidate.qTable },
-            false
+            {
+              name,
+              agent: candidate.agent,
+              double: candidate.double,
+              qTable: candidate.qTable,
+            },
+            false,
           ),
         ];
       });
       return true;
     },
-    [make, agents]
+    [make, agents],
   );
 
   const remove = useCallback((id: string) => {
@@ -228,7 +231,7 @@ export const SavedAgentsProvider = ({ children }: { children: ReactNode }) => {
       importFile,
       remove,
     }),
-    [agents, saveLocal, saveFile, exportFile, importFile, remove]
+    [agents, saveLocal, saveFile, exportFile, importFile, remove],
   );
 
   return (

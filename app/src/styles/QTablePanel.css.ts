@@ -7,7 +7,6 @@ export const QTitleRow = styled.span`
   gap: 6px;
 `;
 
-// Green "frozen" pill shown in demo mode.
 export const FrozenBadge = styled.span`
   display: inline-flex;
   align-items: center;
@@ -21,7 +20,6 @@ export const FrozenBadge = styled.span`
   padding: 2px 7px;
 `;
 
-// Wrapper that hosts the heatmap canvas.
 export const CanvasWrap = styled.div`
   flex: 1;
   min-height: 0;
@@ -38,7 +36,6 @@ export const QCanvas = styled.canvas`
   display: block;
 `;
 
-// Column action labels under the heatmap.
 export const ActionRow = styled.div`
   display: flex;
   justify-content: space-around;
@@ -47,7 +44,6 @@ export const ActionRow = styled.div`
   opacity: 0.7;
 `;
 
-// Colour-scale legend row.
 export const LegendRow = styled.div`
   display: flex;
   align-items: center;
@@ -73,7 +69,6 @@ export const LegendMax = styled.span`
   font-weight: 700;
 `;
 
-// Centered placeholder (no agent / waiting).
 export const QEmpty = styled.div`
   flex: 1;
   display: flex;

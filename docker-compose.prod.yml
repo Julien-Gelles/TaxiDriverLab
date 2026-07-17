@@ -1,9 +1,3 @@
-# Production stack — deployed to Docker Swarm, routed through the shared
-# Traefik instance. For local dev use docker-compose.yml instead.
-#
-#     docker compose -f docker-compose.prod.yml build
-#     docker compose -f docker-compose.prod.yml config | docker stack deploy -c - taxidriverlab
-
 services:
   backend:
     build:

@@ -1,9 +1,6 @@
 import styled from "styled-components";
 import { theme } from "./theme";
 
-// Help icon (? circle) shown on parent hover, sitting inline right after the
-// widget title. Hidden by default; the parent card reveals it by targeting the
-// stable [data-widget-help] attribute on hover (see DefautWidgetBox / SpeedRow).
 export const WidgetHelpButton = styled.button`
   flex: none;
   margin-left: 6px;
@@ -23,7 +20,10 @@ export const WidgetHelpButton = styled.button`
   justify-content: center;
   padding: 0;
   opacity: 0;
-  transition: opacity 0.15s ease, background 0.12s ease, color 0.12s ease;
+  transition:
+    opacity 0.15s ease,
+    background 0.12s ease,
+    color 0.12s ease;
   z-index: 20;
 
   &:hover {

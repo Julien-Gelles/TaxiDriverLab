@@ -13,7 +13,6 @@ export const ChartSvg = styled.svg`
   overflow: visible;
 `;
 
-// Per-series legend (only shown with more than one active simulation).
 export const ChartLegend = styled.div`
   position: absolute;
   top: 0;
@@ -33,7 +32,6 @@ export const LegendItem = styled.span<{ $color: string }>`
   color: ${({ $color }) => $color};
 `;
 
-// Small colour square used in the legend and hover tooltip.
 export const Swatch = styled.span<{ $color: string; $size: number }>`
   width: ${({ $size }) => $size}px;
   height: ${({ $size }) => $size}px;
@@ -42,7 +40,6 @@ export const Swatch = styled.span<{ $color: string; $size: number }>`
   display: inline-block;
 `;
 
-// Floating hover tooltip; positioned by percentage of the chart box.
 export const ChartTooltip = styled.div<{ $left: number; $top: number }>`
   position: absolute;
   left: ${({ $left }) => $left}%;
@@ -78,7 +75,6 @@ export const TooltipLetter = styled.span<{ $color: string }>`
   font-weight: 800;
 `;
 
-// Centered "waiting" placeholder.
 export const ChartEmpty = styled.div`
   flex: 1;
   display: flex;

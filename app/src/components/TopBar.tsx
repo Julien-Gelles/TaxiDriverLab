@@ -15,11 +15,12 @@ import {
 } from "../styles";
 import type { SimStatus } from "../types";
 
-// Re-exported so widgets that show a status badge (StatsPanel, Chrono,
-// TaxiTerrain) can keep importing it alongside statusInfo from here.
 export { StatusPill };
 
-export const statusInfo = (status: SimStatus, t: TFunction): { text: string; color: string } => {
+export const statusInfo = (
+  status: SimStatus,
+  t: TFunction,
+): { text: string; color: string } => {
   switch (status) {
     case "running":
       return { text: t("status.running"), color: theme.yellow };
@@ -53,7 +54,9 @@ export const TopBarContent = () => {
   const agentLabel =
     activeCount > 1
       ? t("topbar.simulations", { count: activeCount })
-      : (agentTKey ? t(agentTKey) : agent ?? "—");
+      : agentTKey
+        ? t(agentTKey)
+        : (agent ?? "—");
   const passengerLabel =
     activeCount > 1
       ? slots.map((s) => s.letter).join(" · ")
@@ -107,7 +110,10 @@ export const TopBarContent = () => {
           <span className="dot" style={{ background: statusColor }} />
           {statusText}
         </StatusPill>
-        <IconBtn aria-label={t("topbar.reload")} onClick={() => window.location.reload()}>
+        <IconBtn
+          aria-label={t("topbar.reload")}
+          onClick={() => window.location.reload()}
+        >
           <RotateCw size={18} />
         </IconBtn>
         <IconBtn $wide onClick={toggleLang} aria-label={t("topbar.lang")}>

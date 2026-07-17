@@ -6,9 +6,6 @@ import { SavedAgentsProvider } from "./hooks/useSavedAgents";
 import { SavedLayoutsProvider } from "./hooks/useSavedLayouts";
 import { Backdrop, Blob, DRIFTS } from "./styles";
 
-// Reflects the shared mode onto <html data-demo> so the accent CSS variables
-// (--accent…) flip to green in demo and back to gold in training. Mode is global
-// (shared across versions), so reading the default slot's config is enough.
 const DemoModeSync = () => {
   const { mode } = useSimConfig();
   useEffect(() => {
@@ -17,12 +14,7 @@ const DemoModeSync = () => {
   return null;
 };
 
-// Drifting blobs behind the dashboard — two sets: training (gold) and demo (green).
-// The app panel covers everything but a thin margin, so the blobs are pushed out
-// to HUG the viewport edges. Sizes in vw scale with the viewport.
-
 const BLOBS_TRAIN = [
-  // Golds — one per corner, centres tucked just off-screen.
   {
     size: "46vw",
     color: "#EFCB4D",
@@ -59,9 +51,7 @@ const BLOBS_TRAIN = [
     dur: "1.7s",
     delay: "-3s",
   },
-  // Blue accents — one per edge so both hues read on the border.
   {
-    // top edge — blue
     size: "34vw",
     color: "#4277e0",
     top: "-22vh",
@@ -73,7 +63,6 @@ const BLOBS_TRAIN = [
     blend: "normal",
   },
   {
-    // bottom edge — green
     size: "34vw",
     color: "#8ee022",
     top: "68vh",
@@ -85,7 +74,6 @@ const BLOBS_TRAIN = [
     blend: "normal",
   },
   {
-    // left edge — green
     size: "30vw",
     color: "#19db3a",
     top: "30vh",
@@ -97,7 +85,6 @@ const BLOBS_TRAIN = [
     blend: "normal",
   },
   {
-    // right edge — blue
     size: "30vw",
     color: "#1f5fdf",
     top: "30vh",
@@ -111,7 +98,6 @@ const BLOBS_TRAIN = [
 ];
 
 const BLOBS_DEMO = [
-  // Greens — one per corner, centres tucked just off-screen.
   {
     size: "46vw",
     color: "#4ade80",
@@ -148,9 +134,7 @@ const BLOBS_DEMO = [
     dur: "1.7s",
     delay: "-3s",
   },
-  // Blue accents — one per edge.
   {
-    // top edge — blue
     size: "34vw",
     color: "#4277e0",
     top: "-22vh",
@@ -162,7 +146,6 @@ const BLOBS_DEMO = [
     blend: "normal",
   },
   {
-    // bottom edge — green (different shade for demo)
     size: "34vw",
     color: "#34d399",
     top: "68vh",
@@ -174,7 +157,6 @@ const BLOBS_DEMO = [
     blend: "normal",
   },
   {
-    // left edge — green (different shade for demo)
     size: "30vw",
     color: "#2dd4bf",
     top: "30vh",
@@ -186,7 +168,6 @@ const BLOBS_DEMO = [
     blend: "normal",
   },
   {
-    // right edge — blue
     size: "30vw",
     color: "#1f5fdf",
     top: "30vh",
@@ -199,7 +180,6 @@ const BLOBS_DEMO = [
   },
 ];
 
-// Component that renders blobs based on mode (inside the provider so it can access useSimConfig)
 const BackdropContent = () => {
   const { mode } = useSimConfig();
   const BLOBS = mode === "demo" ? BLOBS_DEMO : BLOBS_TRAIN;

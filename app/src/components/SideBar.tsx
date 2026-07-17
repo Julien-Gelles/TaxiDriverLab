@@ -51,7 +51,7 @@ import { widgetDrag, widgetLimit } from "./widgetDrag";
 
 const buildDragGhost = (type: string): HTMLElement | null => {
   const original = document.querySelector<HTMLElement>(
-    `.grid-stack-item[gs-id="${type}"] .grid-stack-item-content`
+    `.grid-stack-item[gs-id="${type}"] .grid-stack-item-content`,
   );
   if (!original) return null;
 
@@ -109,8 +109,6 @@ export const WidgetCountProvider = ({
 
 const useWidgetCounts = () => useContext(WidgetCountContext);
 
-// ── Header ────────────────────────────────────────────────────────────────────
-
 export const SidebarHeaderContent = ({ rowHeight }: { rowHeight: number }) => {
   const { t } = useTranslation();
   const { q, setQ } = useSidebarSearch();
@@ -151,15 +149,11 @@ export const SidebarHeaderContent = ({ rowHeight }: { rowHeight: number }) => {
   );
 };
 
-// ── Body ──────────────────────────────────────────────────────────────────────
-
 const THUMBS = import.meta.glob("../assets/components/*.webp", {
   eager: true,
   import: "default",
 }) as Record<string, string>;
 
-// In demo mode, prefer the green "<id>-demo.webp" variant when it exists; fall
-// back to the regular thumbnail otherwise.
 const thumb = (id: string, demo: boolean): string | undefined => {
   if (demo) {
     const demoSrc = THUMBS[`../assets/components/${id}-demo.webp`];
@@ -168,8 +162,6 @@ const thumb = (id: string, demo: boolean): string | undefined => {
   return THUMBS[`../assets/components/${id}.webp`];
 };
 
-// tKey maps to sidebar.menus.* (for groups) or sidebar.items.* (for items).
-// `note: true` renders the label as a muted placeholder (empty submenus).
 type Item = { tKey: string; id?: string; note?: boolean };
 type MenuDef = { tKey: string; Icon: typeof MapIcon; items: Item[] };
 
@@ -282,12 +274,13 @@ const Menu = ({
   const groupLabel = t(`sidebar.menus.${def.tKey}`);
 
   const shown = filtering
-    ? def.items.filter((i) => t(`sidebar.items.${i.tKey}`).toLowerCase().includes(q))
+    ? def.items.filter((i) =>
+        t(`sidebar.items.${i.tKey}`).toLowerCase().includes(q),
+      )
     : def.items;
   const isOpen = filtering ? shown.length > 0 : open;
   const { Icon } = def;
 
-  // Drag-to-grid behaviour, shared by thumbnail tiles and thumbnail-less chips.
   const dnd = (id: string, atMax: boolean) => ({
     draggable: !atMax,
     onDragStart: (e: DragEvent<HTMLElement>) => {
@@ -335,7 +328,7 @@ const Menu = ({
             const itemLabel = t(`sidebar.items.${it.tKey}`);
             const src = it.id ? thumb(it.id, isDemo) : undefined;
             const max = it.id ? widgetLimit(it.id) : 0;
-            const used = it.id ? counts[it.id] ?? 0 : 0;
+            const used = it.id ? (counts[it.id] ?? 0) : 0;
             const atMax = it.id ? used >= max : false;
             const limitTitle = atMax
               ? t("sidebar.limitReached", { label: itemLabel, used, max })
@@ -343,23 +336,38 @@ const Menu = ({
             return (
               <li key={it.tKey}>
                 {it.note ? (
-                  // Placeholder for an empty submenu (settings / help).
                   <EmptyNote>{itemLabel}</EmptyNote>
                 ) : !it.id ? (
                   <span className="text">{itemLabel}</span>
                 ) : src ? (
-                  <Thumb $atMax={atMax} title={limitTitle} {...dnd(it.id, atMax)}>
-                    <img src={src} alt={itemLabel} loading="lazy" draggable={false} />
+                  <Thumb
+                    $atMax={atMax}
+                    title={limitTitle}
+                    {...dnd(it.id, atMax)}
+                  >
+                    <img
+                      src={src}
+                      alt={itemLabel}
+                      loading="lazy"
+                      draggable={false}
+                    />
                     <ThumbOverlay>
                       <span className="name">{itemLabel}</span>
-                      <span className={`count${atMax ? " full" : ""}`}>{used}/{max}</span>
+                      <span className={`count${atMax ? " full" : ""}`}>
+                        {used}/{max}
+                      </span>
                     </ThumbOverlay>
                   </Thumb>
                 ) : (
-                  // Draggable component without a thumbnail (save / layout panels).
-                  <DragChip $atMax={atMax} title={limitTitle} {...dnd(it.id, atMax)}>
+                  <DragChip
+                    $atMax={atMax}
+                    title={limitTitle}
+                    {...dnd(it.id, atMax)}
+                  >
                     <span className="name">{itemLabel}</span>
-                    <span className={`count${atMax ? " full" : ""}`}>{used}/{max}</span>
+                    <span className={`count${atMax ? " full" : ""}`}>
+                      {used}/{max}
+                    </span>
                   </DragChip>
                 )}
               </li>
@@ -388,7 +396,9 @@ export const SidebarNav = () => {
           <ExpandAllBtn
             type="button"
             onClick={() => setAll(!allOpen)}
-            aria-label={allOpen ? t("sidebar.collapseAll") : t("sidebar.expandAll")}
+            aria-label={
+              allOpen ? t("sidebar.collapseAll") : t("sidebar.expandAll")
+            }
             title={allOpen ? t("sidebar.collapseAll") : t("sidebar.expandAll")}
           >
             {allOpen ? <ChevronUp size={15} /> : <ChevronDown size={15} />}

@@ -1,14 +1,12 @@
 import styled from "styled-components";
 import { theme } from "./theme";
 
-// Vertical list wrapping the live-stats rows.
 export const StatList = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
 `;
 
-// Live-stats row — label + tabular value, separated by a hairline.
 export const StatRow = styled.div`
   display: flex;
   justify-content: space-between;

@@ -1,14 +1,6 @@
 import styled from "styled-components";
 import { theme } from "./theme";
 
-// Shared widget primitives — the cross-cutting building blocks every widget card
-// is composed from. Component-specific styles live in each component's twin
-// <Name>.css.ts file; these three are used across many widgets, so they stay in
-// this shared module.
-
-// The standard widget card: a bordered cream surface that lays its children out
-// in a vertical stack. `$color` overrides the fill (e.g. the golden Controls
-// card). Reveals the inline help "?" on hover (see WidgetHelpButton).
 export const DefautWidgetBox = styled.div<{ $color?: string }>`
   box-sizing: border-box;
   height: calc(100% - 6px);

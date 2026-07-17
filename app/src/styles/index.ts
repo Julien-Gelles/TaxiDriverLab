@@ -1,11 +1,7 @@
-// Design tokens.
 export * from "./theme";
 
-// Shared widget primitives (used across many components).
 export * from "./ui.css";
 
-// One twin <Name>.css.ts per component file. Each holds the styled-components
-// for the component of the same name in ../components.
 export * from "./App.css";
 export * from "./Grid.css";
 export * from "./GridStackBoard.css";

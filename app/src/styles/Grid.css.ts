@@ -1,9 +1,6 @@
 import styled from "styled-components";
 import { theme } from "./theme";
 
-// ── Backdrop grid ────────────────────────────────────────────────────────────
-// The static cell grid drawn behind the gridstack widgets (see Grid.tsx).
-
 export const GridStage = styled.div`
   position: relative;
   width: fit-content;
@@ -36,7 +33,6 @@ export const GridCell = styled.div`
   border: 1px solid rgba(255, 255, 255, 0.01);
 `;
 
-// Live drop target: snaps to the cell a dragged component would land on.
 export const DropPreview = styled.div<{
   $x: number;
   $y: number;
@@ -55,20 +51,11 @@ export const DropPreview = styled.div<{
   pointer-events: none;
   z-index: 1000;
   box-sizing: border-box;
-  transition: left 0.06s ease, top 0.06s ease;
+  transition:
+    left 0.06s ease,
+    top 0.06s ease;
 `;
 
-// ── App shell ────────────────────────────────────────────────────────────────
-// The fixed dashboard panel and its nav layers (sidebar + topbar), all driven by
-// Grid.tsx. $sidebar / $topbar are pixel sizes (4 cols / 1 row worth of cells).
-
-// The app panel: a fixed-size dark rounded surface pinned to the viewport with an
-// even margin on every side, so the coloured backdrop shows all around. It never
-// scrolls itself — only its inner regions do.
-//
-// Columns: sidebar + main. Rows: two header rows + the scrolling body. The topbar
-// occupies the first header row of the main column; the sidebar header spans both
-// header rows (twice the topbar's height).
 export const AppShell = styled.div<{ $sidebar: number; $topbar: number }>`
   position: fixed;
   inset: ${theme.appMargin}px;
@@ -101,9 +88,6 @@ export const AppShell = styled.div<{ $sidebar: number; $topbar: number }>`
   }
 `;
 
-// Sidebar header — spans both header rows (2× the topbar height). The brand sits
-// in the first row band (aligned with the topbar) and the search in the second.
-// No hard divider: the body below fades out under it via a mask gradient.
 export const SidebarHeader = styled.div`
   grid-column: 1;
   grid-row: 1 / 3;
@@ -114,11 +98,6 @@ export const SidebarHeader = styled.div`
   overflow: hidden;
 `;
 
-// Scales the header content uniformly (zoom reflows layout, unlike transform, so
-// scroll metrics stay correct). zoom resolves percentages in the pre-zoom
-// coordinate space, so width/height:100% already fills the (cellSize-based) band
-// — the content inside is effectively authored against designCell and zoomed to
-// the live cell size, keeping every proportion identical at any window size.
 export const SidebarHeaderInner = styled.div<{ $scale: number }>`
   zoom: ${({ $scale }) => $scale};
   width: 100%;
@@ -129,8 +108,6 @@ export const SidebarHeaderInner = styled.div<{ $scale: number }>`
   padding: 0 16px;
 `;
 
-// Sidebar body — scrolls independently beneath the header. The top fades out so
-// content disappears smoothly under the header instead of meeting a hard line.
 export const Sidebar = styled.aside`
   grid-column: 1;
   grid-row: 3;
@@ -144,11 +121,6 @@ export const Sidebar = styled.aside`
   -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 26px);
 `;
 
-// Scales the nav content uniformly. zoom (not transform) is required here so the
-// scroll height stays correct: the nav can grow past the viewport when menus are
-// expanded, and the Sidebar must scroll it. A definite height keeps the settings
-// group pinned to the bottom (its margin-top:auto) when the content is short; the
-// nav overflows it and the Sidebar scrolls when expanded.
 export const SidebarInner = styled.div<{ $scale: number }>`
   zoom: ${({ $scale }) => $scale};
   width: 100%;
@@ -156,9 +128,6 @@ export const SidebarInner = styled.div<{ $scale: number }>`
   box-sizing: border-box;
 `;
 
-// Removal drop zone — overlays the sidebar menu (same grid cell) while a widget
-// is being dragged. Dropping a widget here removes it (see gridstack `removable`
-// pointing at #sidebar-trash). Inert and invisible when no drag is in progress.
 export const SidebarTrash = styled.div<{ $active: boolean }>`
   grid-column: 1;
   grid-row: 3;
@@ -195,7 +164,6 @@ export const SidebarTrash = styled.div<{ $active: boolean }>`
   }
 `;
 
-// Topbar — fixed across the top of the main column (first header row), always visible.
 export const Topbar = styled.header`
   grid-column: 2;
   grid-row: 1;
@@ -207,8 +175,6 @@ export const Topbar = styled.header`
   overflow: hidden;
 `;
 
-// Scales the topbar content uniformly (see SidebarHeaderInner). Hosts the flex
-// row + padding that used to live on Topbar, so the spacing scales too.
 export const TopbarInner = styled.div<{ $scale: number }>`
   zoom: ${({ $scale }) => $scale};
   width: 100%;
@@ -221,9 +187,6 @@ export const TopbarInner = styled.div<{ $scale: number }>`
   padding: 0 18px;
 `;
 
-// Main dashboard area — the only region that scrolls for the grid content. The
-// padding keeps the widgets off the edges; the grid's column budget accounts for
-// it (see useGridCount) so nothing overflows horizontally.
 export const GridSlot = styled.div<{ $elevated?: boolean }>`
   grid-column: 2;
   grid-row: 2 / 4;

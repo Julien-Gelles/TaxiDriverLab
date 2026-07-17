@@ -1,7 +1,12 @@
 import { MonitorPlay, Pause, Play, Square, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { useSimulations, useSavedAgents, AGENTS, SPEED_PRESETS } from "../hooks";
+import {
+  useSimulations,
+  useSavedAgents,
+  AGENTS,
+  SPEED_PRESETS,
+} from "../hooks";
 import type { SimConfigValue } from "../hooks";
 import type { SavedAgent, StartParams } from "../types";
 import {
@@ -24,10 +29,10 @@ import { WidgetHelp } from "./WidgetHelp";
 const TRAIN_CARD_BG = `linear-gradient(150deg, ${theme.yellowGlow}, ${theme.yellow} 55%, ${theme.yellowDark})`;
 const DEMO_CARD_BG = `linear-gradient(150deg, #4ade80, #22c55e 55%, #16a34a)`;
 
-// Build the start payload for a slot. In demo, when a user-saved agent is
-// selected, its agent/passenger-mode and Q-table override the config so the
-// backend replays that saved model instead of a built-in pretrained one.
-const paramsFor = (c: SimConfigValue, saved?: SavedAgent | null): StartParams => ({
+const paramsFor = (
+  c: SimConfigValue,
+  saved?: SavedAgent | null,
+): StartParams => ({
   agent: saved ? saved.agent : c.agent,
   episodes: c.episodes,
   delay: c.delay,
@@ -58,14 +63,18 @@ export const PlayControls = () => {
 
   const total = shared?.episodes ?? 0;
   const current = slots.length
-    ? Math.min(...slots.map((s) => s.sim.step?.episode ?? s.sim.episodes.length))
+    ? Math.min(
+        ...slots.map((s) => s.sim.step?.episode ?? s.sim.episodes.length),
+      )
     : 0;
   const pct = total > 0 ? Math.min(100, (current / total) * 100) : 0;
 
   const agentTKey = AGENTS.find((a) => a.key === shared?.agent)?.tKey;
   const subtitle =
     activeCount <= 1
-      ? (agentTKey ? t(agentTKey) : shared?.agent ?? "—")
+      ? agentTKey
+        ? t(agentTKey)
+        : (shared?.agent ?? "—")
       : slots.map((s) => `${s.letter}·${s.config.agent}`).join("  ");
 
   const handlePrimary = () => {
@@ -75,7 +84,7 @@ export const PlayControls = () => {
       slots.forEach((s) => {
         const saved =
           s.config.mode === "demo" && s.config.savedAgentId
-            ? savedAgents.find((a) => a.id === s.config.savedAgentId) ?? null
+            ? (savedAgents.find((a) => a.id === s.config.savedAgentId) ?? null)
             : null;
         s.sim.start(paramsFor(s.config, saved));
       });
@@ -98,11 +107,14 @@ export const PlayControls = () => {
         <ControlChip>
           <ChipIcon size={14} fill={theme.onAccent} />
           {isDemo ? t("play.chip_demo") : t("play.chip_train")}
-          <WidgetHelp content={isDemo ? t("play.help_demo") : t("play.help_train")} />
+          <WidgetHelp
+            content={isDemo ? t("play.help_demo") : t("play.help_train")}
+          />
         </ControlChip>
 
         <ControlSubtitle>
-          {isDemo ? t("play.subtitle_demo") : t("play.subtitle_train")} · {subtitle}
+          {isDemo ? t("play.subtitle_demo") : t("play.subtitle_train")} ·{" "}
+          {subtitle}
         </ControlSubtitle>
 
         <ControlEpisode>
@@ -121,7 +133,11 @@ export const PlayControls = () => {
             </ControlIconBadge>
             {primaryLabel}
           </PrimaryButton>
-          <SecondaryButton onClick={handleStop} disabled={!connected || !active} aria-label={t("play.stop")}>
+          <SecondaryButton
+            onClick={handleStop}
+            disabled={!connected || !active}
+            aria-label={t("play.stop")}
+          >
             <ControlIconBadge>
               <Square size={16} fill={theme.onAccent} />
             </ControlIconBadge>
@@ -130,7 +146,9 @@ export const PlayControls = () => {
 
         <ControlFooter>
           {t("play.speed", { label: speedLabel })}
-          {activeCount <= 1 ? ` · seed ${shared?.seed ?? "—"}` : ` · ${activeCount} versions`}
+          {activeCount <= 1
+            ? ` · seed ${shared?.seed ?? "—"}`
+            : ` · ${activeCount} versions`}
         </ControlFooter>
       </ControlStack>
     </DefautWidgetBox>

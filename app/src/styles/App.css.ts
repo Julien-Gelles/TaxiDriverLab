@@ -1,11 +1,6 @@
 import styled, { createGlobalStyle, keyframes } from "styled-components";
 import { theme } from "./theme";
 
-// ── Animated yellow backdrop ────────────────────────────────────────────────
-// A full-viewport layer of yellow gradients with a handful of soft, blurred
-// "blobs" that drift around forever. It sits behind the app panel (z-index 0),
-// so the motion shows through the margin framing the dashboard.
-
 const drift1 = keyframes`
   0%   { transform: translate(0, 0) scale(1); }
   50%  { transform: translate(8vw, 6vh) scale(1.2); }
@@ -71,7 +66,11 @@ export const Blob = styled.div<{
   top: ${({ $top }) => $top};
   left: ${({ $left }) => $left};
   border-radius: 50%;
-  background: radial-gradient(circle at 50% 50%, ${({ $color }) => $color} 0%, transparent 70%);
+  background: radial-gradient(
+    circle at 50% 50%,
+    ${({ $color }) => $color} 0%,
+    transparent 70%
+  );
   filter: blur(44px);
   opacity: ${({ $opacity }) => $opacity ?? 0.85};
   /* Yellows use "screen" for a richer molten-gold look where they overlap; the

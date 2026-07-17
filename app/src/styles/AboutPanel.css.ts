@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { theme } from "./theme";
 
-// Banner layout: taxi image on the left, title + description on the right.
 export const AboutRow = styled.div`
   box-sizing: border-box;
   height: 100%;

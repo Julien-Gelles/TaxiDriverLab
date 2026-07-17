@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { theme } from "./theme";
 
-// Hyper-parameter row — a boxed pill: label on the left, editable value chip right.
 export const FieldRow = styled.label`
   display: flex;
   align-items: center;
@@ -40,7 +39,6 @@ export const NumberInput = styled.input`
   }
 `;
 
-// Two-column grid holding the parameter rows.
 export const FieldGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -49,7 +47,6 @@ export const FieldGrid = styled.div`
   align-content: start;
 `;
 
-// Green "frozen model" banner shown in demo mode.
 export const FrozenBanner = styled.div`
   display: flex;
   align-items: center;

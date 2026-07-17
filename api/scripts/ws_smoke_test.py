@@ -16,13 +16,12 @@ import websockets
 async def main() -> None:
     uri = "ws://127.0.0.1:8000/ws"
     async with websockets.connect(uri) as ws:
-        # 1) layout on connect
+
         layout = json.loads(await ws.recv())
         assert layout["type"] == "layout", layout
         print("layout:", layout["rows"], "x", layout["cols"],
               "| locations:", len(layout["locations"]), "| walls:", len(layout["walls"]))
 
-        # 2) start a short fast run
         await ws.send(json.dumps({
             "type": "start",
             "params": {"agent": "Q", "episodes": 3, "delay": 0.0, "seed": 42},

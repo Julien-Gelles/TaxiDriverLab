@@ -1,9 +1,6 @@
 import styled from "styled-components";
 import { theme } from "./theme";
 
-// ── Controls card (golden surface, dark buttons) ─────────────────────────────
-
-// Stacks the whole controls card content with tight, consistent spacing.
 export const ControlStack = styled.div`
   display: flex;
   flex-direction: column;
@@ -12,7 +9,6 @@ export const ControlStack = styled.div`
   min-height: 0;
 `;
 
-// "⚡ Contrôles" pill at the top of the card.
 export const ControlChip = styled.div`
   align-self: flex-start;
   display: inline-flex;
@@ -32,7 +28,6 @@ export const ControlSubtitle = styled.div`
   font-weight: 600;
 `;
 
-// Large episode counter: "132 / 200 épisodes".
 export const ControlEpisode = styled.div`
   display: flex;
   align-items: baseline;
@@ -66,7 +61,6 @@ export const ControlProgressFill = styled.div<{ $pct: number }>`
   transition: width 0.3s ease;
 `;
 
-// Row holding the primary (3/4) and secondary (1/4) action buttons.
 export const ControlButtons = styled.div`
   display: flex;
   gap: 10px;
@@ -98,7 +92,6 @@ const controlButtonBase = `
   }
 `;
 
-// Primary action — three quarters of the width, icon badge + label.
 export const PrimaryButton = styled.button`
   ${controlButtonBase}
   flex: 3;
@@ -108,14 +101,12 @@ export const PrimaryButton = styled.button`
   font-weight: 700;
 `;
 
-// Secondary action — the remaining quarter, icon only.
 export const SecondaryButton = styled.button`
   ${controlButtonBase}
   flex: 1;
   min-width: 0;
 `;
 
-// Golden circular icon badge sitting inside the dark buttons.
 export const ControlIconBadge = styled.span`
   display: inline-flex;
   align-items: center;

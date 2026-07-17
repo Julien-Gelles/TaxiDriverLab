@@ -23,7 +23,6 @@ export const ChronoBody = styled.div`
   justify-content: center;
 `;
 
-// The boxed clock readout with the glowing accent border.
 export const ChronoClock = styled.div`
   display: flex;
   align-items: center;
@@ -36,7 +35,6 @@ export const ChronoClock = styled.div`
   box-shadow: 0 0 18px var(--accent-soft);
 `;
 
-// A two-digit segment (mm / ss / cc). Dimmed for the centiseconds.
 export const ChronoSeg = styled.span<{ $dim?: boolean }>`
   font-size: ${({ $dim }) => ($dim ? 28 : 40)}px;
   font-weight: 800;
@@ -45,7 +43,6 @@ export const ChronoSeg = styled.span<{ $dim?: boolean }>`
   align-self: center;
 `;
 
-// ":" between minutes and seconds.
 export const ChronoSep = styled.span`
   font-size: 34px;
   font-weight: 300;
@@ -53,7 +50,6 @@ export const ChronoSep = styled.span`
   margin-bottom: 4px;
 `;
 
-// "." before the centiseconds.
 export const ChronoDot = styled.span`
   font-size: 28px;
   font-weight: 300;

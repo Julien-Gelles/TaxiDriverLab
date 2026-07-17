@@ -4,7 +4,7 @@
 export const qValueToColor = (
   q: number,
   qMin: number,
-  qMax: number
+  qMax: number,
 ): [number, number, number] => {
   const white: [number, number, number] = [255, 255, 255];
   if (Math.abs(q) < 1e-9) return white;
@@ -38,7 +38,7 @@ export const GREEN: [number, number, number] = [34, 197, 94]; // #22c55e (demo a
 const lerp = (
   a: [number, number, number],
   b: [number, number, number],
-  t: number
+  t: number,
 ): [number, number, number] => [
   Math.round(a[0] + (b[0] - a[0]) * t),
   Math.round(a[1] + (b[1] - a[1]) * t),
@@ -51,7 +51,7 @@ export const qValueToBlueYellow = (
   qMax: number,
   // In demo mode the positive side of the scale is green instead of gold, to
   // match the global accent.
-  demo = false
+  demo = false,
 ): [number, number, number] => {
   if (q < 0 && qMin < 0) {
     // Grey (at 0) → blue (at the most negative value).

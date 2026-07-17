@@ -1,8 +1,6 @@
 import styled from "styled-components";
 import { theme } from "./theme";
 
-// Whole speed widget: keeps the hairline border like the other cards but no
-// fill — title on the left, slider on the right.
 export const SpeedRow = styled.div`
   box-sizing: border-box;
   height: calc(100% - 6px);
@@ -24,7 +22,6 @@ export const SpeedRow = styled.div`
   }
 `;
 
-// "VITESSE" caption to the left of the slider.
 export const SpeedHeader = styled.div`
   flex: none;
   display: flex;
@@ -45,7 +42,6 @@ export const SpeedTrack = styled.div`
   gap: 4px;
 `;
 
-// Track for the custom speed slider; click/drag the thumb to snap between tiers.
 export const SpeedTrackBar = styled.div<{ $disabled?: boolean }>`
   position: relative;
   height: 6px;
@@ -56,8 +52,6 @@ export const SpeedTrackBar = styled.div<{ $disabled?: boolean }>`
   opacity: ${({ $disabled }) => ($disabled ? 0.5 : 1)};
 `;
 
-// Ticks marking each speed tier position along the track. space-around centers
-// each tick on its tier segment (at (i+0.5)/n), lining up with the labels below.
 export const SpeedTicks = styled.div`
   position: absolute;
   inset: 0;
@@ -74,8 +68,6 @@ export const SpeedTick = styled.span`
   opacity: 0.25;
 `;
 
-// Draggable circular handle positioned along the track by percentage.
-// While dragging it follows the pointer directly; on drop it eases to the snapped tier.
 export const SpeedThumb = styled.div<{
   $percent: number;
   $disabled?: boolean;
@@ -101,8 +93,6 @@ export const SpeedThumb = styled.div<{
   }
 `;
 
-// Speed tier labels rendered as a segmented pill control: click a tier to jump
-// to it; the active tier is filled with the golden accent.
 export const SpeedLabels = styled.div`
   display: flex;
   align-items: stretch;
@@ -130,7 +120,9 @@ export const SpeedLabelButton = styled.button<{ $active: boolean }>`
       ? `linear-gradient(135deg, var(--accent-glow), var(--accent))`
       : "transparent"};
   color: ${({ $active }) => ($active ? theme.onAccent : theme.grey)};
-  transition: background 0.15s ease, color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 
   &:hover:not(:disabled) {
     color: ${({ $active }) => ($active ? theme.onAccent : theme.ink)};

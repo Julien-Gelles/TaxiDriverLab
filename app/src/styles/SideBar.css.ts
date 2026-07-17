@@ -4,8 +4,6 @@ import { theme } from "./theme";
 const ACCENT_GRADIENT = `linear-gradient(90deg, var(--accent), var(--accent-glow))`;
 const ACCENT_GLOW = "0 7px 20px var(--accent-soft)";
 
-// ── Header (brand + search) ────────────────────────────────────────────────
-
 export const BrandZone = styled.div`
   flex: none;
   display: flex;
@@ -27,7 +25,9 @@ export const Brand = styled.div`
   gap: 12px;
   min-width: 0;
 
-  .meta { min-width: 0; }
+  .meta {
+    min-width: 0;
+  }
   .name {
     font-weight: 800;
     font-size: 15px;
@@ -62,7 +62,9 @@ export const SearchBox = styled.div`
   background: ${theme.creamDark};
   color: ${theme.grey};
 
-  .lead { flex: none; }
+  .lead {
+    flex: none;
+  }
 
   input {
     flex: 1;
@@ -73,7 +75,9 @@ export const SearchBox = styled.div`
     color: ${theme.ink};
     font-family: inherit;
     font-size: 13px;
-    &::placeholder { color: ${theme.grey}; }
+    &::placeholder {
+      color: ${theme.grey};
+    }
   }
 
   .clear {
@@ -89,12 +93,15 @@ export const SearchBox = styled.div`
     background: transparent;
     color: ${theme.grey};
     cursor: pointer;
-    transition: color 0.12s ease, background 0.12s ease;
-    &:hover { color: ${theme.ink}; background: ${theme.cream}; }
+    transition:
+      color 0.12s ease,
+      background 0.12s ease;
+    &:hover {
+      color: ${theme.ink};
+      background: ${theme.cream};
+    }
   }
 `;
-
-// ── Body (nav + menus) ──────────────────────────────────────────────────────
 
 export const Nav = styled.nav`
   display: flex;
@@ -146,8 +153,13 @@ export const ExpandAllBtn = styled.button`
   background: transparent;
   color: ${theme.grey};
   cursor: pointer;
-  transition: color 0.12s ease, background 0.12s ease;
-  &:hover { color: ${theme.ink}; background: ${theme.creamDark}; }
+  transition:
+    color 0.12s ease,
+    background 0.12s ease;
+  &:hover {
+    color: ${theme.ink};
+    background: ${theme.creamDark};
+  }
 `;
 
 export const Badge = styled.span`
@@ -179,7 +191,11 @@ export const MenuButton = styled.button<{ $open: boolean }>`
   background: transparent;
   color: ${theme.ink};
   font-weight: 600;
-  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease,
+    border-color 0.12s ease,
+    box-shadow 0.12s ease;
 
   .label {
     flex: 1;
@@ -189,8 +205,15 @@ export const MenuButton = styled.button<{ $open: boolean }>`
     text-overflow: ellipsis;
     color: ${theme.inkSoft};
   }
-  .lead, .chev { flex: none; color: ${theme.grey}; }
-  ${Badge} { background: var(--accent-soft); color: var(--accent); }
+  .lead,
+  .chev {
+    flex: none;
+    color: ${theme.grey};
+  }
+  ${Badge} {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
 
   &:hover {
     background: ${ACCENT_GRADIENT};
@@ -198,8 +221,15 @@ export const MenuButton = styled.button<{ $open: boolean }>`
     font-weight: 700;
     box-shadow: ${ACCENT_GLOW};
     color: ${theme.onAccent};
-    .label, .lead, .chev { color: ${theme.onAccent}; }
-    ${Badge} { background: rgba(0, 0, 0, 0.18); color: ${theme.onAccent}; }
+    .label,
+    .lead,
+    .chev {
+      color: ${theme.onAccent};
+    }
+    ${Badge} {
+      background: rgba(0, 0, 0, 0.18);
+      color: ${theme.onAccent};
+    }
   }
 `;
 
@@ -211,7 +241,9 @@ export const SubList = styled.ul`
   flex-direction: column;
   gap: 14px;
 
-  li { list-style: none; }
+  li {
+    list-style: none;
+  }
 
   .text {
     display: block;
@@ -220,12 +252,13 @@ export const SubList = styled.ul`
     padding: 6px 10px;
     border-radius: 8px;
     cursor: pointer;
-    &:hover { background: ${theme.creamDark}; color: ${theme.ink}; }
+    &:hover {
+      background: ${theme.creamDark};
+      color: ${theme.ink};
+    }
   }
 `;
 
-// Muted placeholder note for empty submenus (settings / help): no hover, no
-// interaction — just a short "nothing here yet" line.
 export const EmptyNote = styled.div`
   font-size: 11px;
   font-style: italic;
@@ -234,8 +267,6 @@ export const EmptyNote = styled.div`
   padding: 4px 10px 6px;
 `;
 
-// Draggable item without a thumbnail (e.g. the save/layout panels): a labelled
-// chip carrying the same drag behaviour + used/max badge as the thumbnails.
 export const DragChip = styled.div<{ $atMax: boolean }>`
   display: flex;
   align-items: center;
@@ -248,7 +279,10 @@ export const DragChip = styled.div<{ $atMax: boolean }>`
   border: 1px solid transparent;
   background: ${theme.creamDark};
   cursor: ${({ $atMax }) => ($atMax ? "not-allowed" : "grab")};
-  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease,
+    border-color 0.12s ease;
 
   .name {
     white-space: nowrap;
@@ -297,7 +331,9 @@ export const Thumb = styled.div<{ $atMax: boolean }>`
     transition: opacity 0.12s ease;
   }
 
-  &:hover { border-color: ${({ $atMax }) => ($atMax ? theme.danger : "var(--accent)")}; }
+  &:hover {
+    border-color: ${({ $atMax }) => ($atMax ? theme.danger : "var(--accent)")};
+  }
 `;
 
 export const ThumbOverlay = styled.div`
@@ -314,9 +350,15 @@ export const ThumbOverlay = styled.div`
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.12s ease;
-  background: linear-gradient(180deg, rgba(16, 15, 11, 0.92), rgba(16, 15, 11, 0));
+  background: linear-gradient(
+    180deg,
+    rgba(16, 15, 11, 0.92),
+    rgba(16, 15, 11, 0)
+  );
 
-  ${Thumb}:hover & { opacity: 1; }
+  ${Thumb}:hover & {
+    opacity: 1;
+  }
 
   .name {
     font-size: 11px;
@@ -335,5 +377,8 @@ export const ThumbOverlay = styled.div`
     border-radius: 999px;
     padding: 2px 7px;
   }
-  .count.full { color: ${theme.white}; background: ${theme.danger}; }
+  .count.full {
+    color: ${theme.white};
+    background: ${theme.danger};
+  }
 `;

@@ -9,13 +9,8 @@ import {
 } from "react";
 import type { LayoutItem, SavedLayout } from "../types";
 
-// User-saved grid layouts. Same model as useSavedAgents (4 slots, localStorage
-// for persisted entries, file save/import for the rest, delete by origin) but
-// the payload is the grid arrangement instead of a trained model.
 export const MAX_SAVED_LAYOUT_SLOTS = 4;
 const STORAGE_KEY = "taxi_saved_layouts";
-// The live grid arrangement, auto-persisted alongside the saved slots so a
-// reload restores exactly what was on screen (see Grid).
 const LAST_KEY = "taxi_last_layout";
 const FILE_VERSION = 1;
 
@@ -33,13 +28,13 @@ type SavedLayoutsContextValue = {
   exportFile: (id: string) => void;
   importFile: (file: File) => Promise<boolean>;
   remove: (id: string) => void;
-  // The last-used arrangement read at mount (null if none), and a setter that
-  // persists the current one. Not reactive — only consumed once at startup.
   lastLayout: LayoutItem[] | null;
   setLastLayout: (items: LayoutItem[]) => void;
 };
 
-const SavedLayoutsContext = createContext<SavedLayoutsContextValue | null>(null);
+const SavedLayoutsContext = createContext<SavedLayoutsContextValue | null>(
+  null,
+);
 
 const isLayoutItem = (v: unknown): v is LayoutItem => {
   if (!v || typeof v !== "object") return false;
@@ -80,7 +75,7 @@ const writePersisted = (layouts: SavedLayout[]) => {
   try {
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify(layouts.filter((l) => l.persisted))
+      JSON.stringify(layouts.filter((l) => l.persisted)),
     );
   } catch {
     /* quota / unavailable — the in-memory list still works this session */
@@ -92,7 +87,9 @@ const loadLastLayout = (): LayoutItem[] | null => {
     const raw = localStorage.getItem(LAST_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length > 0 && parsed.every(isLayoutItem)
+    return Array.isArray(parsed) &&
+      parsed.length > 0 &&
+      parsed.every(isLayoutItem)
       ? parsed
       : null;
   } catch {
@@ -134,7 +131,9 @@ const downloadJson = (layout: SavedLayout) => {
     items: layout.items,
     createdAt: layout.createdAt,
   };
-  const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+  const blob = new Blob([JSON.stringify(payload)], {
+    type: "application/json",
+  });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -147,11 +146,11 @@ const downloadJson = (layout: SavedLayout) => {
 
 export const SavedLayoutsProvider = ({ children }: { children: ReactNode }) => {
   const [layouts, setLayouts] = useState<SavedLayout[]>(() => loadPersisted());
-  // Read once at mount; Grid uses it as the startup arrangement. Writes go
-  // straight to localStorage (no state) so persisting on every grid change
-  // doesn't re-render the app.
   const [lastLayout] = useState<LayoutItem[] | null>(() => loadLastLayout());
-  const setLastLayout = useCallback((items: LayoutItem[]) => writeLastLayout(items), []);
+  const setLastLayout = useCallback(
+    (items: LayoutItem[]) => writeLastLayout(items),
+    [],
+  );
 
   useEffect(() => {
     writePersisted(layouts);
@@ -165,7 +164,7 @@ export const SavedLayoutsProvider = ({ children }: { children: ReactNode }) => {
       persisted,
       createdAt: Date.now(),
     }),
-    []
+    [],
   );
 
   const saveLocal = useCallback(
@@ -179,7 +178,7 @@ export const SavedLayoutsProvider = ({ children }: { children: ReactNode }) => {
       });
       return ok;
     },
-    [make]
+    [make],
   );
 
   const saveFile = useCallback(
@@ -191,11 +190,14 @@ export const SavedLayoutsProvider = ({ children }: { children: ReactNode }) => {
           ? prev
           : [
               ...prev,
-              { ...layout, name: uniqueName(layout.name, new Set(prev.map((l) => l.name))) },
-            ]
+              {
+                ...layout,
+                name: uniqueName(layout.name, new Set(prev.map((l) => l.name))),
+              },
+            ],
       );
     },
-    [make]
+    [make],
   );
 
   const exportFile = useCallback(
@@ -203,7 +205,7 @@ export const SavedLayoutsProvider = ({ children }: { children: ReactNode }) => {
       const layout = layouts.find((l) => l.id === id);
       if (layout) downloadJson(layout);
     },
-    [layouts]
+    [layouts],
   );
 
   const importFile = useCallback(
@@ -216,19 +218,28 @@ export const SavedLayoutsProvider = ({ children }: { children: ReactNode }) => {
       }
       const o = parsed as Record<string, unknown>;
       const candidate = {
-        name: typeof o?.name === "string" ? o.name : file.name.replace(/\.json$/i, ""),
+        name:
+          typeof o?.name === "string"
+            ? o.name
+            : file.name.replace(/\.json$/i, ""),
         items: o?.items,
       };
       if (!isValidLayout({ ...candidate, persisted: false })) return false;
       if (layouts.length >= MAX_SAVED_LAYOUT_SLOTS) return false;
       setLayouts((prev) => {
         if (prev.length >= MAX_SAVED_LAYOUT_SLOTS) return prev;
-        const name = uniqueName(candidate.name, new Set(prev.map((l) => l.name)));
-        return [...prev, make({ name, items: candidate.items as LayoutItem[] }, false)];
+        const name = uniqueName(
+          candidate.name,
+          new Set(prev.map((l) => l.name)),
+        );
+        return [
+          ...prev,
+          make({ name, items: candidate.items as LayoutItem[] }, false),
+        ];
       });
       return true;
     },
-    [make, layouts]
+    [make, layouts],
   );
 
   const remove = useCallback((id: string) => {
@@ -248,7 +259,16 @@ export const SavedLayoutsProvider = ({ children }: { children: ReactNode }) => {
       lastLayout,
       setLastLayout,
     }),
-    [layouts, saveLocal, saveFile, exportFile, importFile, remove, lastLayout, setLastLayout]
+    [
+      layouts,
+      saveLocal,
+      saveFile,
+      exportFile,
+      importFile,
+      remove,
+      lastLayout,
+      setLastLayout,
+    ],
   );
 
   return (
@@ -262,7 +282,9 @@ export const SavedLayoutsProvider = ({ children }: { children: ReactNode }) => {
 export const useSavedLayouts = (): SavedLayoutsContextValue => {
   const ctx = useContext(SavedLayoutsContext);
   if (!ctx) {
-    throw new Error("useSavedLayouts must be used within a SavedLayoutsProvider");
+    throw new Error(
+      "useSavedLayouts must be used within a SavedLayoutsProvider",
+    );
   }
   return ctx;
 };

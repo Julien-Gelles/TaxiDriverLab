@@ -1,13 +1,16 @@
-import { useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { GridStack, type GridStackWidget } from "gridstack";
 import "gridstack/dist/gridstack.css";
 
-import { GridStackArea, GridStackItemStyle, ScaledWidget, theme } from "../styles";
+import {
+  GridStackArea,
+  GridStackItemStyle,
+  ScaledWidget,
+  theme,
+} from "../styles";
 import type { GridStackBoardProps } from "../types";
 import { VersionContext } from "../hooks";
-
-
 
 export const GridStackBoard = ({
   columns,
@@ -31,7 +34,6 @@ export const GridStackBoard = ({
   const widgetsRef = useRef(widgets);
   const [contentEls, setContentEls] = useState<Record<string, HTMLElement>>({});
 
-  // Keep the latest callback/widgets in refs (the init effect runs only once).
   useEffect(() => {
     onUsedRowsChangeRef.current = onUsedRowsChange;
   }, [onUsedRowsChange]);
@@ -51,9 +53,6 @@ export const GridStackBoard = ({
     widgetsRef.current = widgets;
   }, [widgets]);
 
-  // Pin every widget to its canonical (valid, non-overlapping) geometry. Used to
-  // recover from gridstack's occasional cold-start mis-placement and after the
-  // column count changes.
   const assertPositions = () => {
     const grid = gridRef.current;
     if (!grid) return;
@@ -72,13 +71,9 @@ export const GridStackBoard = ({
     grid.batchUpdate(false);
   };
 
-  // Initialise Gridstack once.
-  // Gridstack owns the widget DOM and uses its native vertical push for collisions.
   useEffect(() => {
     if (!elRef.current) return;
 
-    // Guards the 'removed' handler: gridstack fires it for every widget during
-    // teardown (removeAll), which must not call back into the unmounting owner.
     let tearingDown = false;
 
     const grid = GridStack.init(
@@ -89,10 +84,9 @@ export const GridStackBoard = ({
         float: true,
         disableResize: true,
         animate: false,
-        // Dragging a widget onto the sidebar's drop zone removes it.
         removable: "#sidebar-trash",
       },
-      elRef.current
+      elRef.current,
     );
     gridRef.current = grid;
 
@@ -108,7 +102,7 @@ export const GridStackBoard = ({
       };
       const itemEl = grid.addWidget(item);
       const content = itemEl.querySelector<HTMLElement>(
-        ".grid-stack-item-content"
+        ".grid-stack-item-content",
       );
       if (!content) return;
       if (widget.color) content.style.background = widget.color;
@@ -116,19 +110,11 @@ export const GridStackBoard = ({
     });
     grid.batchUpdate(false);
 
-    // addWidget can mis-place items during the initial batch insert — on a cold
-    // start the grid sometimes lays out before column/cell sizing has settled,
-    // scattering widgets into a tall single stack. Re-assert every widget's
-    // intended geometry from the canonical (valid, non-overlapping) coordinates.
-    // Run it synchronously now and again on the next frame, once gridstack has
-    // finished its internal layout, so the final positions are deterministic.
     assertPositions();
     const raf = requestAnimationFrame(assertPositions);
 
     setContentEls(els);
 
-    // Expose a live read of the current layout (gridstack owns positions after
-    // init, so the owner's widget state is stale once anything is dragged).
     registerApiRef.current?.({
       getLayout: () =>
         grid.engine.nodes.map((n) => ({
@@ -140,8 +126,6 @@ export const GridStackBoard = ({
         })),
     });
 
-    // Track the lowest occupied row and report it up, so the grid can add
-    // rows when widgets overflow and drop them again once freed.
     const reportUsedRows = () => {
       let maxBottom = 0;
       grid.engine.nodes.forEach((n) => {
@@ -156,11 +140,8 @@ export const GridStackBoard = ({
     onChange();
     grid.on("change added removed", onChange);
 
-    // Surface widget drags so the sidebar can turn into a removal drop zone.
     grid.on("dragstart", () => onDragActiveChangeRef.current?.(true));
     grid.on("dragstop", () => onDragActiveChangeRef.current?.(false));
-    // When a widget is dropped onto the removal zone, gridstack takes it off the
-    // grid and fires 'removed' — sync it out of the owner's widget state too.
     grid.on("removed", (_event, items) => {
       if (tearingDown) return;
       (items as { id?: string }[] | undefined)?.forEach((n) => {
@@ -177,13 +158,8 @@ export const GridStackBoard = ({
       grid.destroy(false);
       gridRef.current = null;
     };
-    // Init runs once; live updates are handled by the effects below.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Mount widgets added after init (e.g. dragged in from the sidebar). Only the
-  // newcomers are inserted; existing nodes keep their live gridstack positions.
-  // Removal isn't handled yet — the board is append-only for now.
   useEffect(() => {
     const grid = gridRef.current;
     if (!grid) return;
@@ -202,7 +178,7 @@ export const GridStackBoard = ({
         h: widget.h,
       });
       const content = itemEl.querySelector<HTMLElement>(
-        ".grid-stack-item-content"
+        ".grid-stack-item-content",
       );
       if (!content) return;
       if (widget.color) content.style.background = widget.color;
@@ -215,8 +191,6 @@ export const GridStackBoard = ({
     }
   }, [widgets]);
 
-  // Keep the column count aligned with the responsive backdrop grid. Changing the
-  // column count can shuffle positions, so re-pin them afterwards.
   useEffect(() => {
     const grid = gridRef.current;
     if (grid && grid.getColumn() !== columns) {
@@ -226,7 +200,6 @@ export const GridStackBoard = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [columns]);
 
-  // Keep square cells: cell height tracks the backdrop cell size.
   useEffect(() => {
     gridRef.current?.cellHeight(cellSize);
   }, [cellSize]);
@@ -243,11 +216,6 @@ export const GridStackBoard = ({
       {widgets.map((widget) => {
         const el = contentEls[widget.id];
         if (!el || widget.content === undefined) return null;
-        // Uniformly scale the content so it keeps identical proportions at any
-        // window size. Every widget shares the same factor (cellSize / designCell)
-        // because each widget's pixel box already scales with cellSize while its
-        // cell ratio stays fixed. The inner box is sized at 1/scale so that, once
-        // scaled, it exactly fills the (fixed-ratio) widget content box.
         const scale = cellSize / theme.designCell;
         const scaled = (
           <VersionContext.Provider value={versionOf[widget.id] ?? 0}>

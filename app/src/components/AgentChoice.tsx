@@ -18,8 +18,15 @@ import { VersionTag } from "./VersionTag";
 export const AgentChoice = () => {
   const { t } = useTranslation();
   const { status } = useSimulation();
-  const { agent, setAgent, isDouble, setIsDouble, mode, savedAgentId, setSavedAgentId } =
-    useSimConfig();
+  const {
+    agent,
+    setAgent,
+    isDouble,
+    setIsDouble,
+    mode,
+    savedAgentId,
+    setSavedAgentId,
+  } = useSimConfig();
   const { has: hasPretrained } = usePretrained();
 
   const locked = status === "running" || status === "paused";
@@ -59,8 +66,6 @@ export const AgentChoice = () => {
         {AGENTS.map(({ key, tKey, subKey }) => {
           const label = t(tKey);
           const sub = t(subKey);
-          // A saved agent (demo) takes precedence: while one is selected, no
-          // base agent card is highlighted. Clicking a card clears it.
           const active = savedAgentId == null && agent === key;
           const trained = hasPretrained(key, isDouble);
           return (
@@ -75,7 +80,9 @@ export const AgentChoice = () => {
                 setSavedAgentId(null);
               }}
             >
-              {isDemo && trained && <PretrainedDot title={t("agent.pretrained")} />}
+              {isDemo && trained && (
+                <PretrainedDot title={t("agent.pretrained")} />
+              )}
               <AgentLabel $active={active}>{label}</AgentLabel>
               <AgentSub>{sub}</AgentSub>
             </AgentBtn>

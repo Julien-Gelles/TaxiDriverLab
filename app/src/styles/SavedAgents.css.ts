@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { theme } from "./theme";
 
-// Save row: name field + action buttons.
 export const SavedForm = styled.div`
   display: flex;
   flex-direction: column;
@@ -59,7 +58,10 @@ export const SavedBtn = styled.button`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: color 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+  transition:
+    color 0.12s ease,
+    border-color 0.12s ease,
+    background 0.12s ease;
 
   &:hover:not(:disabled) {
     color: ${theme.ink};
@@ -71,7 +73,6 @@ export const SavedBtn = styled.button`
   }
 `;
 
-// Hint shown when no saveable (tabular) model is available yet.
 export const SavedHint = styled.div`
   font-size: 11px;
   font-weight: 600;
@@ -79,7 +80,6 @@ export const SavedHint = styled.div`
   color: ${theme.grey};
 `;
 
-// Grid of saved-agent cards (the "slots").
 export const SavedList = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -102,8 +102,6 @@ export const SavedEmpty = styled.div`
   padding: 8px;
 `;
 
-// A card is a div (not a button) because it hosts the export/delete icon
-// buttons — a button cannot legally nest another button.
 export const SavedCard = styled.div<{
   $active: boolean;
   $demo: boolean;
@@ -161,7 +159,6 @@ export const SavedCard = styled.div<{
   }
 `;
 
-// Origin tag: localStorage-backed vs file/session slot.
 export const OriginBadge = styled.span<{ $persisted: boolean }>`
   flex: none;
   font-size: 9.5px;
@@ -175,7 +172,6 @@ export const OriginBadge = styled.span<{ $persisted: boolean }>`
     $persisted ? "var(--accent)" : "rgba(255,255,255,0.06)"};
 `;
 
-// Small per-card icon button (export / delete).
 export const IconMini = styled.button<{ $danger?: boolean }>`
   display: inline-flex;
   align-items: center;
@@ -188,10 +184,14 @@ export const IconMini = styled.button<{ $danger?: boolean }>`
   background: transparent;
   color: ${theme.grey};
   cursor: pointer;
-  transition: color 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+  transition:
+    color 0.12s ease,
+    border-color 0.12s ease,
+    background 0.12s ease;
 
   &:hover {
     color: ${({ $danger }) => ($danger ? theme.danger : theme.ink)};
-    border-color: ${({ $danger }) => ($danger ? theme.danger : "var(--accent)")};
+    border-color: ${({ $danger }) =>
+      $danger ? theme.danger : "var(--accent)"};
   }
 `;

@@ -1,6 +1,5 @@
 import type { AgentKey } from "../types";
 
-// Speed tiers shared by the slider and the stats readout.
 export const SPEED_PRESETS: { tKey: string; delay: number }[] = [
   { tKey: "speeds.slow", delay: 0.4 },
   { tKey: "speeds.normal", delay: 0.12 },

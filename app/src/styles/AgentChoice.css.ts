@@ -6,7 +6,6 @@ const ACTIVE_CARD = `linear-gradient(135deg, rgba(232,180,0,0.20), rgba(232,180,
 const DEMO_GRADIENT = `linear-gradient(135deg, #4ade80, #22c55e)`;
 const DEMO_ACTIVE_CARD = `linear-gradient(135deg, rgba(34,197,94,0.20), rgba(34,197,94,0.05))`;
 
-// 1 / 2 passenger segmented toggle.
 export const PassengerToggle = styled.div`
   display: flex;
   gap: 2px;
@@ -36,7 +35,6 @@ export const PassengerBtn = styled.button<{
   opacity: ${({ $locked }) => ($locked ? 0.55 : 1)};
 `;
 
-// Grid of algorithm cards.
 export const AgentGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -71,7 +69,6 @@ export const AgentBtn = styled.button<{
   opacity: ${({ $locked }) => ($locked ? 0.55 : 1)};
 `;
 
-// Green "pre-trained available" indicator dot.
 export const PretrainedDot = styled.span`
   position: absolute;
   top: 7px;

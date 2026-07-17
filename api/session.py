@@ -39,18 +39,13 @@ from . import pretrained as pt
 
 ENV_ID = "Taxi-v4"
 DEFAULT_DELAY = 0.25
-# Default per-episode step cap, depending on the number of passengers.
-# Single → Gymnasium's Taxi-v4 TimeLimit (200); double → the simulator's own
-# horizon (400). Both are overridable from the UI via the ``maxSteps`` param.
 DEFAULT_MAX_STEPS_SINGLE = 200
 DEFAULT_MAX_STEPS_DOUBLE = 400
 # Cap the live stream at ~30 fps. At high speed (delay ~ 0) the worker would
-# otherwise produce thousands of frames/sec, flooding the WebSocket and making
-# pause/stop laggy. Throttling by wall-clock keeps the animation visible and
-# the controls responsive whatever the speed.
+# otherwise produce thousands of frames/sec, flooding the WebSocket.
 MIN_FRAME_INTERVAL = 1.0 / 30
 # The Q-table is heavy (e.g. 500×6 floats) so refresh the heatmap once every N
-# streamed steps — the map/step stream stays smooth, the heatmap a touch slower.
+# streamed steps.
 QTABLE_FRAME_SKIP = 3
 
 
@@ -99,8 +94,6 @@ def _make_double_agent(key: str, params: dict):
     return DblQLearningAgent(alpha=alpha, gamma=gamma, epsilon=epsilon)
 
 
-# ── Session ──────────────────────────────────────────────────────────────────
-
 class SimulationSession:
     """One running simulation, controllable (pause / speed / stop) from the API."""
 
@@ -113,7 +106,6 @@ class SimulationSession:
             "delay": DEFAULT_DELAY,
         }
 
-    # ------------------------------------------------------------------ control
     def start(self, params: dict) -> None:
         self.stop()
         control: dict[str, Any] = {
@@ -143,7 +135,6 @@ class SimulationSession:
             thread.join(timeout=2.0)
         self._thread = None
 
-    # ------------------------------------------------------------------- helpers
     def _await_resume(self, control: dict) -> None:
         while control["pause"] and not control["quit"]:
             time.sleep(0.05)
@@ -151,7 +142,6 @@ class SimulationSession:
     def _should_stream(self, done: bool, now: float, last_stream: float) -> bool:
         return done or (now - last_stream) >= MIN_FRAME_INTERVAL
 
-    # ------------------------------------------------- agent introspection msgs
     @staticmethod
     def _caps(agent: Any) -> dict:
         """Detect which live visualisations an agent can feed (Q-table / network)."""
@@ -166,7 +156,7 @@ class SimulationSession:
         if q is None:
             return None
         try:
-            arr = q  # numpy array (tabular) or reconstructed for the DQN
+            arr = q
             return {
                 "type": "qtable",
                 "q": arr.round(2).tolist(),
@@ -222,7 +212,6 @@ class SimulationSession:
             if weights is not None:
                 self._emit(weights)
 
-    # --------------------------------------------------------- single-mode worker
     def _run_single(self, params: dict, control: dict) -> None:
         agent_key = (params.get("agent") or "Q").upper()
         episodes = int(params.get("episodes", 20))
@@ -242,13 +231,6 @@ class SimulationSession:
             state_size = int(env.observation_space.n)
             action_size = int(env.action_space.n)
             agent = _make_single_agent(agent_key, state_size, action_size, params, seed)
-
-            # Demo mode: load a model and freeze exploration; nothing is learned
-            # here. A model can come from two places:
-            #   - params["model"]: a Q-table the UI saved from an in-app training
-            #     run and is now replaying (additive — does not touch the
-            #     read-only core/save/ pretrained flow below);
-            #   - otherwise the matching pretrained model from core/save/.
             pretrained_loaded = False
             if is_demo:
                 payload = params.get("model") or pt.load_payload(agent_key, False)
@@ -274,17 +256,12 @@ class SimulationSession:
                 if weights is not None:
                     self._emit(weights)
 
-            # Cumulative action histogram for the whole run (every step counts,
-            # even the ones the stream throttle skips).
             action_counts = [0] * len(ACTION_NAMES)
 
             for ep in range(episodes):
                 if control["quit"]:
                     break
 
-                # Seed only the first reset: the run stays reproducible, but
-                # each episode draws a fresh layout instead of replaying the
-                # same one (passenger/destination would otherwise never vary).
                 obs, _ = env.reset(seed=seed if ep == 0 else None)
                 state = int(obs)
                 total_reward = 0.0
@@ -305,7 +282,6 @@ class SimulationSession:
                     next_state = int(next_obs)
                     done = terminated or truncated
 
-                    # Agent-specific Q-update (skipped entirely in demo mode)
                     if not is_demo:
                         if is_mc:
                             trajectory.append((state, action, reward))
@@ -332,7 +308,6 @@ class SimulationSession:
                     if done:
                         break
 
-                # Episode-end updates (skipped in demo mode — model is frozen)
                 if not is_demo:
                     if is_mc and trajectory:
                         agent.update_from_episode(trajectory, terminated,
@@ -379,7 +354,6 @@ class SimulationSession:
             "double": False,
         }
 
-    # --------------------------------------------------------- double-mode worker
     def _run_double(self, params: dict, control: dict) -> None:
         agent_key = (params.get("agent") or "Q").upper()
         episodes = int(params.get("episodes", 20))
@@ -396,10 +370,6 @@ class SimulationSession:
         env = TaxiEnvironmentSimulator(max_steps=max_steps)
         try:
             agent = _make_double_agent(agent_key, params)
-
-            # Demo mode: replay a UI-provided Q-table (params["model"]) if any,
-            # else the matching pretrained model from core/save/. Additive — the
-            # existing pretrained flow is unchanged when no model is supplied.
             pretrained_loaded = False
             if is_demo:
                 payload = params.get("model") or pt.load_payload(agent_key, True)
@@ -425,14 +395,12 @@ class SimulationSession:
                 if weights is not None:
                     self._emit(weights)
 
-            # Cumulative action histogram for the whole run.
             action_counts = [0] * len(ACTION_NAMES)
 
             for ep in range(episodes):
                 if control["quit"]:
                     break
 
-                # Seed only the first reset (reproducible run, varied episodes).
                 obs, _ = env.reset(seed=seed if ep == 0 else None)
                 if is_heuristic:
                     agent.reset_episode()
@@ -481,10 +449,8 @@ class SimulationSession:
                     if done:
                         break
 
-                # Episode-end: MC buffers here; DQN updates target net and decays epsilon
                 if learns and not is_demo:
                     agent.on_episode_end(ep)
-                    # Q/S on_episode_end is a no-op → decay explicitly
                     if agent_key in ("Q", "S"):
                         agent.decay_epsilon(0.995, 0.01)
 

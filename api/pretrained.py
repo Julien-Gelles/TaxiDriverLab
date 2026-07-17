@@ -3,14 +3,6 @@ Read-only loader for pretrained agent models used by demo mode.
 
 Models live in ``core/save/`` (committed to the repo) and are produced
 separately by the core CLI — this module never trains or writes them.
-
-Each ``.pkl`` is a dict:
-    {
-        "type":      "qtable" | "dqn",
-        "data":      numpy.ndarray (tabular) | state_dict (DQN),
-        "agent_key": "Q" | "S" | "M" | "D",
-        "double":    bool,
-    }
 """
 
 import pickle
@@ -19,7 +11,6 @@ from typing import Any
 
 import numpy as np
 
-# core/save sits beside the api package: <repo>/core/save.
 SAVE_DIR = Path(__file__).resolve().parent.parent / "core" / "save"
 
 # Only these agents carry a learnable model; B (random) and R (heuristic) don't.

@@ -66,10 +66,6 @@ import {
 import type { GridBoardApi, LayoutItem, Widget } from "../types";
 import { widgetDrag, widgetLimit } from "./widgetDrag";
 
-// Default grid layouts, picked by the responsive column count (see
-// defaultLayoutFor): the natural grid width is 10, 11, or 12+ columns depending
-// on the viewport, and each gets a layout authored for that width. Each entry is
-// a component type + cell geometry; buildWidgets turns it into live widgets.
 const LAYOUT_10: LayoutItem[] = [
   { type: "about", x: 0, y: 0, w: 9, h: 3 },
   { type: "speed", x: 0, y: 3, w: 7, h: 1 },
@@ -121,15 +117,9 @@ const LAYOUT_12: LayoutItem[] = [
   { type: "steps", x: 6, y: 21, w: 5, h: 4 },
 ];
 
-// The default arrangement for the current responsive width: 10 cols, 11 cols, or
-// 12-and-wider. cols never drops below MIN_GRID_COLS (10).
 const defaultLayoutFor = (cols: number): LayoutItem[] =>
   cols <= 10 ? LAYOUT_10 : cols === 11 ? LAYOUT_11 : LAYOUT_12;
 
-// Catalogue of components that can be dragged from the sidebar onto the grid.
-// Keyed by the sidebar item id (see COMPONENT_MENUS in SideBar.tsx); each entry
-// gives a default footprint and a factory for a fresh React instance. Duplicates
-// are allowed, so every drop mints a new instance.
 type CatalogEntry = { w: number; h: number; make: () => ReactNode };
 
 const CATALOG: Record<string, CatalogEntry> = {
@@ -157,9 +147,6 @@ const CATALOG: Record<string, CatalogEntry> = {
   chrono: { w: 3, h: 2, make: () => <Chrono /> },
 };
 
-// Turn a layout (component type + geometry) into live widgets, minting content
-// from the catalog. Each type appears once in the default layouts, so the type
-// doubles as the widget id (drops use "type-<seq>", so no collision).
 const buildWidgets = (items: LayoutItem[]): Widget[] =>
   items.flatMap((it) => {
     const def = CATALOG[it.type];
@@ -177,7 +164,6 @@ const buildWidgets = (items: LayoutItem[]): Widget[] =>
     ];
   });
 
-// MIME type used to carry the dragged component's catalog key.
 export const WIDGET_DND_MIME = "application/x-taxi-widget";
 
 export const Grid = () => {
@@ -185,56 +171,29 @@ export const Grid = () => {
   const isPortrait = useIsPortrait();
   const { cols, rows } = useGridCount();
 
-  // One cell = 1/10 of the main axis of the area *inside* the app panel margins.
-  // Use clientWidth/clientHeight (which exclude the scrollbars) rather than
-  // innerWidth/innerHeight, so the grid never overshoots and triggers a phantom
-  // scroll on the cross axis — notably the horizontal scroll seen in portrait.
   const root = document.documentElement;
   const margin = theme.appMargin * 2;
   const available =
     (isPortrait ? root.clientWidth : root.clientHeight) - margin;
 
-  // One cell is normally 1/10 of the main cross axis. But the grid area must
-  // always show at least MIN_GRID_COLS columns (see useGridCount): when the
-  // window is too narrow to fit the sidebar plus those columns at that size, we
-  // shrink the cells so the whole row still fits horizontally instead.
   const gridAreaWidth = root.clientWidth - margin - theme.gridPadding * 2;
   const cellFromWidth = gridAreaWidth / (cols + SIDEBAR_COLS);
   const cellSize = Math.min(available / 10, cellFromWidth);
 
-  // Nav layers reserve whole cells out of the panel: the sidebar is 4 cells wide
-  // (full height), the topbar 1 cell tall (across the main column).
   const sidebarWidth = SIDEBAR_COLS * cellSize;
   const topbarHeight = TOPBAR_ROWS * cellSize;
 
-  // Same uniform scale the widgets use (see GridStackBoard): the topbar/sidebar
-  // contents are authored against designCell and zoomed to the live cell size so
-  // they stay proportional at any window size. Heights passed into the scaled
-  // content are expressed in design pixels (÷scale) so they map back to actual.
   const scale = cellSize / theme.designCell;
 
-  // Lowest row occupied by a widget is calculated.
-  // The grid grows below the responsive base row count when widgets overflow.
-  // Shrinks back as soon as those extra rows are freed.
   const [usedRows, setUsedRows] = useState(0);
   const effectiveRows = Math.max(rows, usedRows);
-
-  // The last-used arrangement (auto-persisted to localStorage) and a setter to
-  // keep it current. Read before Grid mounts, so it's available in the
-  // initializer below.
   const { lastLayout, setLastLayout } = useSavedLayouts();
 
-  // Live widget set. On load: the last-used layout from localStorage if any,
-  // otherwise the default layout for the current responsive width (10 / 11 / 12+
-  // columns). The width is read once at mount, so a later resize doesn't wipe the
-  // user's arrangement. Each base widget's id is its catalog type.
   const [widgets, setWidgets] = useState<Widget[]>(() => {
     const fromLast = lastLayout ? buildWidgets(lastLayout) : [];
     return fromLast.length ? fromLast : buildWidgets(defaultLayoutFor(cols));
   });
 
-  // How many copies of each component type are currently on the grid, so the
-  // sidebar can show "used / max" and block adding past the per-type limit.
   const counts = useMemo(() => {
     const c: Record<string, number> = {};
     widgets.forEach((w) => {
@@ -246,9 +205,6 @@ export const Grid = () => {
 
   const canAdd = (type: string) => (counts[type] ?? 0) < widgetLimit(type);
 
-  // Version (simulation slot) of each widget = its index among same-type widgets
-  // in creation order: 1st → 0 (A), 2nd → 1 (B), 3rd → 2 (C). All widgets sharing
-  // a version index are wired to the same simulation.
   const versionOf = useMemo(() => {
     const seen: Record<string, number> = {};
     const map: Record<string, number> = {};
@@ -261,8 +217,6 @@ export const Grid = () => {
     return map;
   }, [widgets]);
 
-  // Number of active simulations = how many versions exist = the largest count of
-  // any single component type (capped at 3). Reported up so idle slots stay off.
   const activeCount = useMemo(
     () => Math.min(3, Math.max(1, ...Object.values(counts))),
     [counts],
@@ -271,14 +225,8 @@ export const Grid = () => {
   useEffect(() => {
     setActiveCount(activeCount);
   }, [activeCount, setActiveCount]);
-  // Monotonic counter so dropped duplicates always get a unique id.
   const dropSeq = useRef(0);
 
-  // ── Layout save / restore ──────────────────────────────────────────────────
-  // The live board API (set by GridStackBoard on mount) lets us read the current
-  // positions, which gridstack owns after init. Applying a saved layout rebuilds
-  // the widgets and bumps a remount key so the board re-initialises at the new
-  // geometry.
   const boardApiRef = useRef<GridBoardApi | null>(null);
   const widgetsRef = useRef(widgets);
   widgetsRef.current = widgets;
@@ -324,7 +272,7 @@ export const Grid = () => {
     });
     if (next.length === 0) return;
     setWidgets(next);
-    setLayoutKey((k) => k + 1); // force the board to re-init at the new positions
+    setLayoutKey((k) => k + 1);
   }, []);
 
   const layoutApi = useMemo<GridLayoutApi>(
@@ -332,19 +280,12 @@ export const Grid = () => {
     [getCurrentLayout, applyLayout],
   );
 
-  // Persist the live arrangement whenever it changes (move/resize/add/remove/
-  // load), so the next reload restores exactly what's on screen.
   const persistLayout = useCallback(() => {
     setLastLayout(getCurrentLayout());
   }, [setLastLayout, getCurrentLayout]);
 
-  // True while a widget is being dragged on the grid: the sidebar morphs into a
-  // "drop to remove" zone for the duration.
   const [removing, setRemoving] = useState(false);
-  // GridStage shares its top-left origin with the backdrop grid, so its rect maps
-  // pixel drop coordinates straight to grid cells.
   const stageRef = useRef<HTMLDivElement>(null);
-  // Snapped cell the dragged component would land on; drives the drop placeholder.
   const [preview, setPreview] = useState<{
     x: number;
     y: number;
@@ -352,8 +293,6 @@ export const Grid = () => {
     h: number;
   } | null>(null);
 
-  // Where a footprint of size `w` lands when dropped at a pixel point — snapped
-  // to a cell and kept fully on the grid.
   const cellAt = (clientX: number, clientY: number, w: number) => {
     const rect = stageRef.current!.getBoundingClientRect();
     const x = Math.max(
@@ -372,7 +311,6 @@ export const Grid = () => {
       e.dataTransfer.getData("text/plain");
     const def = CATALOG[type];
     if (!def || !stageRef.current) return;
-    // Enforce the per-component limit (defensive: maxed items aren't draggable).
     if (!canAdd(type)) return;
 
     const { x, y } = cellAt(e.clientX, e.clientY, def.w);
@@ -387,13 +325,10 @@ export const Grid = () => {
     const type = widgetDrag.type;
     const def = type ? CATALOG[type] : undefined;
     if (!def || !type || !stageRef.current) return;
-    // At the per-component limit: refuse the drop (no preventDefault) and hide
-    // the placeholder so it's visually clear the component can't be added.
     if (!canAdd(type)) {
       setPreview(null);
       return;
     }
-    // Allow the drop, show the copy cursor, and move the placeholder.
     e.preventDefault();
     e.dataTransfer.dropEffect = "copy";
     const { x, y } = cellAt(e.clientX, e.clientY, def.w);
@@ -404,8 +339,6 @@ export const Grid = () => {
     );
   };
 
-  // Clear the placeholder when the pointer leaves the grid or the drag ends
-  // anywhere (including a drop outside the grid).
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
       setPreview(null);
@@ -474,7 +407,6 @@ export const Grid = () => {
               }}
             />
 
-            {/* Live drop target: snaps to the cell the dragged component will land on. */}
             {preview && (
               <DropPreview
                 $x={preview.x}
@@ -487,7 +419,6 @@ export const Grid = () => {
           </GridStage>
         </GridSlot>
 
-        {/* Removal zone overlaying the sidebar menu while a widget is dragged. */}
         <SidebarTrash id="sidebar-trash" $active={removing}>
           <Trash2 size={28} className="trash-icon" />
           <span>{t("trash.label")}</span>

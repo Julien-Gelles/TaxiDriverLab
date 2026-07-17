@@ -13,7 +13,5 @@ export const movingAverage = (values: number[], window: number): number[] => {
   return out;
 };
 
-// Window scaled to the series length: enough to tame the noise without flattening
-// the trend. ~1/15 of the points, clamped to a sensible range.
 export const smoothWindow = (length: number): number =>
   Math.max(2, Math.min(100, Math.round(length / 15)));

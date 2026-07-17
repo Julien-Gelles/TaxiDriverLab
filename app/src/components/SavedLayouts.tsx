@@ -22,7 +22,6 @@ import type { SavedLayout } from "../types";
 import { WidgetHelp } from "./WidgetHelp";
 import { VersionTag } from "./VersionTag";
 
-// Next free "My-Layout-N" name not already taken.
 const nextDefaultName = (taken: SavedLayout[]): string => {
   const prefix = "My-Layout-";
   const used = new Set(
@@ -30,7 +29,7 @@ const nextDefaultName = (taken: SavedLayout[]): string => {
       .map((l) => l.name)
       .filter((n) => n.startsWith(prefix))
       .map((n) => Number(n.slice(prefix.length)))
-      .filter((n) => Number.isInteger(n) && n > 0)
+      .filter((n) => Number.isInteger(n) && n > 0),
   );
   let n = 1;
   while (used.has(n)) n += 1;
@@ -96,7 +95,9 @@ export const SavedLayouts = () => {
           {t("layouts.title")}
           <WidgetHelp content={t("layouts.help")} />
         </span>
-        <MutedText>{t("layouts.slots", { used: layouts.length, max: maxSlots })}</MutedText>
+        <MutedText>
+          {t("layouts.slots", { used: layouts.length, max: maxSlots })}
+        </MutedText>
       </WidgetTitle>
 
       <SavedForm>
@@ -106,7 +107,11 @@ export const SavedLayouts = () => {
           onChange={(e) => setName(e.target.value)}
         />
         <SavedActions>
-          <SavedBtn onClick={handleSaveLocal} disabled={!hasFreeSlot} title={t("layouts.saveLocal")}>
+          <SavedBtn
+            onClick={handleSaveLocal}
+            disabled={!hasFreeSlot}
+            title={t("layouts.saveLocal")}
+          >
             <Save size={13} />
             {t("layouts.local")}
           </SavedBtn>
@@ -114,7 +119,11 @@ export const SavedLayouts = () => {
             <Download size={13} />
             {t("layouts.file")}
           </SavedBtn>
-          <SavedBtn onClick={() => fileRef.current?.click()} disabled={!hasFreeSlot} title={t("layouts.import")}>
+          <SavedBtn
+            onClick={() => fileRef.current?.click()}
+            disabled={!hasFreeSlot}
+            title={t("layouts.import")}
+          >
             <Upload size={13} />
             {t("layouts.import")}
           </SavedBtn>
@@ -154,7 +163,8 @@ export const SavedLayouts = () => {
                 </OriginBadge>
               </div>
               <span className="sub">
-                <FolderOpen size={11} /> {t("layouts.count", { n: l.items.length })}
+                <FolderOpen size={11} />{" "}
+                {t("layouts.count", { n: l.items.length })}
               </span>
               <div className="ops">
                 <IconMini

@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { theme } from "./theme";
 
-// Iconic taxi checker strip — a subtle accent stripe under the terrain title.
 export const CheckerBar = styled.div`
   height: 6px;
   border-radius: 3px;
@@ -20,19 +19,18 @@ export const CheckerBar = styled.div`
   opacity: 0.9;
 `;
 
-// The terrain map itself, filling the remaining card height.
 export const TerrainSvg = styled.svg`
   flex: 1;
   min-height: 0;
   width: 100%;
 `;
 
-// The taxi glyph — eased between cells as it moves.
 export const TaxiGlyph = styled.text`
-  transition: x 0.08s linear, y 0.08s linear;
+  transition:
+    x 0.08s linear,
+    y 0.08s linear;
 `;
 
-// Centered placeholder shown while connecting / waiting.
 export const Centered = styled.div`
   flex: 1;
   display: flex;

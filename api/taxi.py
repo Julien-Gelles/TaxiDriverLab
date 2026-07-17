@@ -1,11 +1,11 @@
 """
-Static Taxi-v3 layout and state decoding for the front-end terrain (option B).
+Static Taxi-v4 layout and state decoding for the front-end terrain (option B).
 
 Instead of streaming pixels, the API sends the *decoded* environment state so the
 browser can draw the 5x5 grid itself. The layout (grid size, the 4 locations and
-the walls) is constant for Taxi-v3 and sent once when a client connects.
+the walls) is constant for Taxi-v4 and sent once when a client connects.
 
-Taxi-v3 state encoding (Gymnasium):
+Taxi-v4 state encoding (Gymnasium):
     ((taxi_row * 5 + taxi_col) * 5 + passenger_location) * 4 + destination
 """
 
@@ -37,7 +37,6 @@ PASSENGER_DELIVERED = 5
 
 ACTION_NAMES = ["South", "North", "East", "West", "Pickup", "Dropoff"]
 
-# Sent once per connection so the front-end can draw the static map.
 LAYOUT = {
     "rows": GRID_ROWS,
     "cols": GRID_COLS,
