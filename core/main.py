@@ -1,5 +1,5 @@
 """
-Taxi Driver: Solve Taxi-v3 (Gymnasium) with Q-Learning.
+Taxi Driver: Solve Taxi-v4 (Gymnasium) with Q-Learning.
 
 Entry point. Supports two modes:
   - user: Interactive; user provides hyperparameters and runs train + test.
@@ -127,8 +127,6 @@ def run_pretrained_demo(args: argparse.Namespace, filename: str) -> None:
         print(f"Erreur : {exc}")
         return
 
-    # In pretrained-demo mode --episodes controls how many demo episodes to run.
-    # Default 5000 is the training default, not meaningful here → fall back to 5.
     num_episodes = args.episodes if args.episodes != 5000 else 5
     mode_label = "double (2 passagers)" if is_double else "single (1 passager)"
     print(f"  Agent : {agent_key} · {mode_label} · ε=0 · {num_episodes} épisode(s)\n")
@@ -163,7 +161,6 @@ try:
 except ImportError:
     pygame = None
 
-# ── Double-passenger agents ──────────────────────────────────────────────────
 from core.agents.double.tabular.q_learning import (
     QLearningAgent as Dbl_QLearningAgent,
     train_agent as dbl_q_train_agent,
@@ -207,7 +204,6 @@ from core.agents.double.rule_based.heuristic import (
     get_evaluation_metrics as dbl_h_get_evaluation_metrics,
 )
 
-# ── Single-passenger agents ───────────────────────────────────────────────────
 from core.agents.single.tabular.q_learning import (
     QLearningAgent,
     train_agent as q_train_agent,
@@ -257,7 +253,6 @@ from core.utils.pygame_stats import PygameStatsWindow
 
 
 ENV_ID = "Taxi-v4"
-# Valeurs prédéfinies pour le délai d'affichage (secondes) : MIN (0) + 3 valeurs
 PRESET_DELAYS: list[float] = [0.0, 0.02, 0.4]
 
 
@@ -361,7 +356,6 @@ def _run_render_demo_double(
 
     demo_env = TaxiEnvironmentSimulator(render_mode="rgb_array")
 
-    # Create a local window if no training window was passed (--demo without --render)
     demo_stats_window = stats_window
     if demo_stats_window is None:
         demo_env.reset()
@@ -449,12 +443,11 @@ def _run_render_demo_double(
         if saved_eps is not None:
             agent.set_epsilon(saved_eps)
         if stats_window is None:
-            # We created a local window — close env and window, nothing for caller to manage.
             demo_env.close()
             demo_stats_window.close()
             demo_env = None
 
-    return demo_env  # None unless caller must close it (when --render + --demo)
+    return demo_env
 
 
 def parse_args() -> argparse.Namespace:
@@ -515,11 +508,6 @@ def parse_args() -> argparse.Namespace:
     args = parser.parse_args()
     args.agent = (args.agent or "Q").upper()
 
-    # Resolve --demo:
-    #   None          → no demo
-    #   "__run__"     → post-training demo, 5 episodes (--demo with no value)
-    #   "<digits>"    → post-training demo, N episodes (--demo 10)
-    #   "<filename>"  → pretrained demo, load from core/save/<filename>.pkl
     demo_raw = args.demo
     if demo_raw is None:
         args.demo_file = None
@@ -528,9 +516,8 @@ def parse_args() -> argparse.Namespace:
         args.demo_file = None
         args.demo_episodes = int(demo_raw) if demo_raw.isdigit() else 5
     else:
-        args.demo_file = demo_raw   # pretrained-demo mode
-        args.demo_episodes = None   # unused in that path
-
+        args.demo_file = demo_raw
+        args.demo_episodes = NotImplemented
     return args
 
 
@@ -609,15 +596,13 @@ def run_user_mode(args: argparse.Namespace) -> None:
             gamma=args.gamma,
             epsilon=args.epsilon,
             seed=args.seed,
-            first_visit=False,  # every-visit MC converges faster
+            first_visit=False,
         )
         train_agent = m_train_agent
         get_training_metrics = m_get_training_metrics
         test_agent = m_test_agent
         get_evaluation_metrics = m_get_evaluation_metrics
     elif use_dqn:
-        # DQN uses its own Adam learning rate (1e-3); the tabular --alpha (0.1)
-        # would make the network diverge, so it is intentionally not wired here.
         agent = DQNAgent(
             state_size=state_size,
             action_size=action_size,
@@ -682,19 +667,12 @@ def run_user_mode(args: argparse.Namespace) -> None:
     }
     if use_q or use_sarsa or use_mc or use_dqn:
         min_eps = 0.01
-        # Scale epsilon decay to the training budget so exploration lasts ~90% of
-        # the run, instead of a fixed 0.995 that ends exploration by ~episode 900.
-        # This is critical for Monte Carlo: with no bootstrapping, MC only learns
-        # from episodes that actually reach the goal, so it needs exploration to
-        # stay alive much longer. Q-Learning/SARSA/DQN bootstrap and tolerate fast
-        # decay, but the adaptive schedule is safe (and fairer) for them too.
         train_kw["min_epsilon"] = min_eps
         train_kw["epsilon_decay"] = min_eps ** (1.0 / max(1, int(0.9 * args.episodes)))
     rewards, steps, epsilons, stopped_early = train_agent(**train_kw)
     mean_reward, mean_steps, success_rate = get_training_metrics(rewards, steps, window=100)
     print(f"\nTraining (last 100 episodes): mean reward = {mean_reward:.2f}, mean steps = {mean_steps:.1f}, success rate = {success_rate:.1%}")
 
-    # Si l'utilisateur a demandé à quitter pendant l'entraînement, on arrête ici.
     if control is not None and control.get("quit"):
         env.close()
         if stats_window is not None:
@@ -706,7 +684,6 @@ def run_user_mode(args: argparse.Namespace) -> None:
     if args.plot:
         plot_training_summary(rewards, steps, smoothing_window=100, epsilons=epsilons if (use_q or use_sarsa or use_mc or use_dqn) else None)
 
-    # Evaluation: no render (fast)
     print(f"\nEvaluating {agent_name} agent (greedy, no exploration)...")
     test_rewards, test_steps = test_agent(
         agent,
@@ -782,8 +759,6 @@ def run_user_mode(args: argparse.Namespace) -> None:
             control=control,
         )
 
-    # Si l'utilisateur a appuyé sur Quitter (bouton ou touche) pendant la démo,
-    # fermer immédiatement la fenêtre et les environnements.
     if control is not None and control.get("quit"):
         if stats_window is not None:
             stats_window.close()
@@ -857,7 +832,6 @@ def run_double_mode(args: argparse.Namespace) -> None:
     else:
         env = TaxiEnvironmentSimulator()
 
-    # Build agent
     if agent_key == "Q":
         agent = Dbl_QLearningAgent(alpha=args.alpha, gamma=args.gamma, epsilon=args.epsilon)
         train_fn, train_metrics_fn = dbl_q_train_agent, dbl_q_get_training_metrics
@@ -929,7 +903,6 @@ def run_double_mode(args: argparse.Namespace) -> None:
     if args.plot:
         plot_training_summary(rewards, steps, smoothing_window=100, epsilons=None)
 
-    # Evaluation: test.py functions create their own clean env (no render_mode)
     print(f"\nEvaluating {agent_name} (greedy)...")
     t_rewards, t_steps, t_successes = test_fn(agent, num_episodes=args.test_episodes, verbose=False)
     t_mean_r, t_mean_s, t_success = eval_metrics_fn(t_rewards, t_steps, t_successes)
@@ -978,7 +951,7 @@ def run_double_mode(args: argparse.Namespace) -> None:
         if stats_window is not None:
             stats_window.close()
         if stats_window is None:
-            pass  # env already closed above
+            pass
         else:
             env.close()
         if demo_env is not None:
@@ -1016,7 +989,6 @@ def run_double_mode(args: argparse.Namespace) -> None:
 def main() -> None:
     args = parse_args()
     if args.demo_file is not None:
-        # Pretrained-demo mode: load model and run demo, no training.
         run_pretrained_demo(args, args.demo_file)
     elif args.double:
         run_double_mode(args)

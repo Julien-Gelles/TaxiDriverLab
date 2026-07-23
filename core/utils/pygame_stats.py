@@ -8,27 +8,25 @@ try:
     import pygame
     import numpy as np
 except ImportError:
-    pygame = None  # type: ignore[assignment]
-    np = None  # type: ignore[assignment]
+    pygame = None
+    np = None
 
 STATS_PANEL_WIDTH = 320
 STATS_PANEL_HEIGHT = 280
-QTABLE_PANEL_WIDTH = 340  # étiquettes axes + heatmap + barre + légendes 20, 0, -800 à droite
-ACTIVATION_PANEL_WIDTH = 360  # panneau graphe du réseau (DQN uniquement ; remplace la Q-table)
-MAX_NODES_PER_LAYER = 50  # regroupe les couches plus grandes (moyenne) pour rester lisible
-EDGES_PER_NODE = 3  # n'affiche que les N arêtes les plus fortes par neurone cible
-QTABLE_Y_LABEL_W = 28  # largeur bande ordonnées (0..500)
-QTABLE_X_LABEL_H = 20  # hauteur bande abscisses (noms actions)
-QTABLE_LEGEND_W = 22  # largeur de la barre de légende des couleurs
-QTABLE_LEGEND_LABEL_W = 40  # espace à droite de la barre pour les valeurs 20, 0, -800
+QTABLE_PANEL_WIDTH = 340
+ACTIVATION_PANEL_WIDTH = 360
+MAX_NODES_PER_LAYER = 50
+EDGES_PER_NODE = 3
+QTABLE_Y_LABEL_W = 28
+QTABLE_X_LABEL_H = 20
+QTABLE_LEGEND_W = 22
+QTABLE_LEGEND_LABEL_W = 40
 QTABLE_BORDER = 2
-# Échelle fixe de la barre de légende (inchangée) : min, 0 au centre, max
 LEGEND_Q_MIN = -800
 LEGEND_Q_MAX = 20
 TAXI_ACTION_NAMES = ("South", "North", "East", "West", "Pickup", "Dropoff")
 BUTTON_HEIGHT = 32
 BUTTON_GAP = 8
-# Valeurs prédéfinies pour le délai (en secondes) : MIN (0) + 0.02 + 0.4
 PRESET_DELAYS: list[float] = [0.0, 0.02, 0.4]
 
 
@@ -43,11 +41,7 @@ class PygameStatsWindow:
         self._map_w = 400
         self._map_h = 300
         if frame_shape is not None:
-            # frame_shape is (height, width, 3) from env.render()
             self._map_h, self._map_w = frame_shape[0], frame_shape[1]
-        # DQN shows a network graph instead of the Q-table; tabular agents show
-        # the Q-table heatmap. They never coexist, so lay out only what's needed
-        # (the graph takes the Q-table's place — no blank panel).
         self._show_activations = show_activations
         if show_activations:
             total_w = self._map_w + STATS_PANEL_WIDTH + ACTIVATION_PANEL_WIDTH
@@ -58,7 +52,6 @@ class PygameStatsWindow:
         pygame.display.set_caption("Taxi - Infos tour")
         self._stats_x = self._map_w
         self._qtable_x = self._map_w + STATS_PANEL_WIDTH
-        # Network-graph panel sits where the Q-table would be (DQN only).
         self._activation_x = self._map_w + STATS_PANEL_WIDTH
         self._font = pygame.font.Font(pygame.font.get_default_font(), 18)
         if self._font is None:

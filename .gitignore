@@ -43,8 +43,3 @@ logs/
 *.njsproj
 *.sln
 *.sw?
-
-# Project tooling
-/memory
-/.claude
-app/.claude

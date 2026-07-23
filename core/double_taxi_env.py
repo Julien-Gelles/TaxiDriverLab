@@ -5,7 +5,7 @@ import numpy as np
 class MultiPassengerTaxiEnv(gym.Env):
     """
     A unified custom environment for Multi-Passenger Taxi.
-    Expands Taxi-v3 to have 2 passengers simultaneously.
+    Expands Taxi-v4 to have 2 passengers simultaneously.
 
     Key design rules (Applied RL approach):
       - Capacity = 1: the taxi can carry only one passenger at a time.
@@ -106,7 +106,6 @@ class MultiPassengerTaxiEnv(gym.Env):
 
         self.current_step = 0
 
-        # Guarantee distinct locations for passengers and destinations
         available_locs = list(range(4))
         np.random.shuffle(available_locs)
         self.p1_loc = available_locs[0]
@@ -143,9 +142,6 @@ class MultiPassengerTaxiEnv(gym.Env):
         self.lastaction = None
         return self.get_features(), {"prob": 1.0}
 
-    # ------------------------------------------------------------------ #
-    #  Action Masking                                                       #
-    # ------------------------------------------------------------------ #
 
     def get_valid_actions(self):
         """
@@ -200,9 +196,6 @@ class MultiPassengerTaxiEnv(gym.Env):
 
         return mask
 
-    # ------------------------------------------------------------------ #
-    #  State representation (18-dim feature vector)                        #
-    # ------------------------------------------------------------------ #
 
     def get_features(self):
         """
@@ -282,9 +275,6 @@ class MultiPassengerTaxiEnv(gym.Env):
             steps_norm,
         ], dtype=np.float32)
 
-    # ------------------------------------------------------------------ #
-    #  Step                                                                #
-    # ------------------------------------------------------------------ #
 
     def step(self, a):
         """
